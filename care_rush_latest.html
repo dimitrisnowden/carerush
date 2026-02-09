@@ -3,7 +3,7 @@
 <head>
   <script>var FALLBACK_LOGO="";</script>
 <script>
-/* v2.5.02: safety shim so board rendering never crashes if syncNeedChipSize got lost */
+/* v2.5.03: safety shim so board rendering never crashes if syncNeedChipSize got lost */
 (function(){
   if(typeof window.syncNeedChipSize === "function") return;
   window.syncNeedChipSize = function(){
@@ -20,7 +20,7 @@
   <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg">
 <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp">
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>care rush v2.5.02</title>
+  <title>care rush v2.5.03</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer"/>
   <script src="https://kit.fontawesome.com/823902fffe.js" crossorigin="anonymous"></script>
 <!-- -->
@@ -30,7 +30,15 @@
     *{box-sizing:border-box;}
     html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 20% 10%, rgba(255,124,16,0.12), transparent 60%),radial-gradient(900px 700px at 90% 20%, rgba(7,139,201,0.12), transparent 55%),var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";}
     .screen{position:fixed;inset:0;display:none;overflow:hidden;}
+    .screen{pointer-events:none;}
+    .screen.active{pointer-events:auto;}
     .screen.active{display:block;}
+    /* v2.5.03: enforce screen stack order (prevents title/map overlap on mobile reload) */
+    #screenTitle{z-index:30;}
+    #screenMap{z-index:20;}
+    #screenPlay{z-index:10;}
+    .topbar{z-index:40;}
+
     .topbar{position:fixed;left:0;right:0;top:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:linear-gradient(to bottom, rgba(0,0,0,0.70), rgba(0,0,0,0.10));border-bottom:1px solid rgba(255,255,255,0.06);z-index:50;}
     .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:0.5px;}
     .badge{font-size:12px;padding:6px 10px;border:1px solid var(--stroke);border-radius:999px;background:rgba(255,255,255,0.04);color:var(--muted);}
@@ -296,11 +304,11 @@
 /* keep anchor translate, then scale up */
 .crGLPin{ transform: translate(-50%,-100%) scale(2); transform-origin: 50% 100%; }
 
-/* --- animations v2.5.02 --- */
+/* --- animations v2.5.03 --- */
 @keyframes crPop { 0%{transform:scale(1)} 40%{transform:scale(0.92)} 100%{transform:scale(1)} }
 .tile.cr-pop { animation: crPop 140ms ease; }
 @keyframes crNope { 0%{transform:translateX(0)} 25%{transform:translateX(-6px)} 50%{transform:translateX(6px)} 75%{transform:translateX(-4px)} 100%{transform:translateX(0)} }
-/* --- animations v2.5.02 --- */
+/* --- animations v2.5.03 --- */
 @keyframes crClear { 0%{transform:scale(1);opacity:1;filter:none} 100%{transform:scale(0.25);opacity:0;filter:blur(1px)} }
 .tile.cr-clear { animation: crClear 200ms ease forwards; }
 @keyframes crSpawn {
@@ -372,7 +380,7 @@
   border-radius: 18px;
   box-shadow: 0 18px 38px rgba(0,0,0,0.45);
 }
-/* --- title screen polish v2.5.02 (safe) --- */
+/* --- title screen polish v2.5.03 (safe) --- */
 #screenTitle{ position: relative; background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg'); background-size: cover; background-position: center; background-repeat:no-repeat; }
 #screenTitle::before{
   content:"";
@@ -407,7 +415,7 @@
   50%{ box-shadow: 0 18px 52px rgba(255,124,16,0.35), 0 18px 40px rgba(0,0,0,0.45); }
 }
 
-/* --- title screen override v2.5.02 --- */
+/* --- title screen override v2.5.03 --- */
 #screenTitle {
   position: relative !important;
   min-height: 100vh !important;
@@ -492,7 +500,7 @@
   50%{ box-shadow: 0 18px 52px rgba(255,124,16,0.35), 0 18px 40px rgba(0,0,0,0.45); }
 }
 
-/* --- title screen fix v2.5.02 --- */
+/* --- title screen fix v2.5.03 --- */
 #screenTitle{
   min-height: 100vh !important;
   height: 100vh !important;
@@ -573,7 +581,7 @@
   50%{ box-shadow: 0 18px 56px rgba(255,124,16,0.35), 0 18px 40px rgba(0,0,0,0.45); }
 }
 
-/* --- title logo v2.5.02 --- */
+/* --- title logo v2.5.03 --- */
 #screenTitle #titleLogo{
   visibility: visible !important;
   position: fixed !important;
@@ -598,7 +606,7 @@
   50%{ transform: translate(-50%, -50%) scale(0.92) translateY(-10px); }
 }
 
-/* --- title logo perf tweaks v2.5.02 --- */
+/* --- title logo perf tweaks v2.5.03 --- */
 #screenTitle #titleLogo{
   background: transparent !important;
   opacity: 0;
@@ -610,7 +618,7 @@
   transform: translate(-50%, -50%) scale(0.92) translateY(0px);
 }
 
-/* --- title button jazz v2.5.02 --- */
+/* --- title button jazz v2.5.03 --- */
 #screenTitle #btnCareToPlay{
   gap: 12px !important;
   padding: 18px 30px !important;
@@ -675,7 +683,7 @@
   filter: brightness(0.98) !important;
 }
 
-/* --- board background v2.5.02 --- */
+/* --- board background v2.5.03 --- */
 #board{
   position: relative;
 }
@@ -691,7 +699,7 @@
   z-index: 1;
 }
 
-/* --- playwrap background v2.5.02 --- */
+/* --- playwrap background v2.5.03 --- */
 #playWrap{
   position: relative;
   background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg');
@@ -711,7 +719,7 @@
   z-index: 1;
 }
 
-/* --- mapwrap background v2.5.02 (minimal, non-invasive) --- */
+/* --- mapwrap background v2.5.03 (minimal, non-invasive) --- */
 #mapWrap{
   background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg');
   background-size: cover;
@@ -719,7 +727,7 @@
   background-repeat: no-repeat;
 }
 
-/* --- darker tints v2.5.02 --- */
+/* --- darker tints v2.5.03 --- */
 /* mapwrap: keep bg image but add a darker tint via gradient layer */
 #mapWrap{
   background-image:
@@ -738,30 +746,30 @@
 }
 
 
-/* --- v2.5.02: stats moved to left pane (dom move) --- */
+/* --- v2.5.03: stats moved to left pane (dom move) --- */
 .hudRowLeft{margin-bottom:12px;}
 #playLeft .hudRowLeft .hudStat{display:flex;flex-direction:column;gap:6px;min-width:110px;align-items:center;}
 #playLeft .hudRowLeft .k{text-transform: lowercase;}
 
 
-/* v2.5.02: keep needs chips on one line */
+/* v2.5.03: keep needs chips on one line */
 .needsWrap::-webkit-scrollbar{height:6px;}
 .needsWrap::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.18);border-radius:999px;}
 .needsWrap::-webkit-scrollbar-track{background:rgba(0,0,0,0.0);}
 
 
-/* v2.5.02: keep stats on one line */
+/* v2.5.03: keep stats on one line */
 .hudRowLeft > div[style*="display:flex"]{flex-wrap:nowrap !important;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;}
 .hudRowLeft > div[style*="display:flex"]::-webkit-scrollbar{height:6px;}
 .hudRowLeft > div[style*="display:flex"]::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.18);border-radius:999px;}
 
 
-/* v2.5.02: tighten stats spacing so it fits without scroll */
+/* v2.5.03: tighten stats spacing so it fits without scroll */
 .hudRowLeft > div[style*="display:flex"]{gap:8px !important;justify-content:space-between;}
 #playLeft .hudRowLeft .hudStat{min-width:94px;}
 
 
-/* v2.5.02: darker left pane tint */
+/* v2.5.03: darker left pane tint */
 #playLeft{
   background: rgba(0,0,0,0.62) !important;
   border: 1px solid rgba(255,255,255,0.10);
@@ -769,12 +777,12 @@
 }
 
 
-/* v2.5.02: remove board tint */
+/* v2.5.03: remove board tint */
 #board{
 }
 
 
-/* v2.5.02: force board container fully transparent (no tint) */
+/* v2.5.03: force board container fully transparent (no tint) */
 html body #screenPlay #board.board{
   background: transparent !important;
   background-color: transparent !important;
@@ -782,7 +790,7 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.02: responsive community-need chips (no horizontal scroll) */
+/* v2.5.03: responsive community-need chips (no horizontal scroll) */
 .leftPane, .leftCol { overflow-x: hidden; }
 
 .needsRow, .needRow, .needChips, .needsChips {
@@ -807,7 +815,7 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.02: hard-fix needs chips overflow (targets actual container: .needsWrap#needsChips + any .flexscroll wrapper) */
+/* v2.5.03: hard-fix needs chips overflow (targets actual container: .needsWrap#needsChips + any .flexscroll wrapper) */
 #needsChips.needsWrap,
 .needsWrap#needsChips,
 .needsWrap.flexscroll,
@@ -846,7 +854,7 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.02: live minimap (maptiler/maplibre) */
+/* v2.5.03: live minimap (maptiler/maplibre) */
 .miniMap .maplibregl-canvas{ outline:none; }
 .miniGlDot{
   width: 12px; height: 12px; border-radius: 999px;
@@ -862,14 +870,14 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.02: minimap uses same pin icon logic as main map */
+/* v2.5.03: minimap uses same pin icon logic as main map */
 .miniGLPin{ display:flex; align-items:flex-end; justify-content:center; }
 .miniGLPin .crPinWrap{ display:flex; align-items:flex-end; justify-content:center; }
 .miniGLPin i{ filter: drop-shadow(0 10px 18px rgba(0,0,0,0.45)); transform: scale(0.75); transform-origin: bottom center; }
 .miniGLPin.active i{ animation: crPulse 1.2s ease-in-out infinite; }
 
 
-/* v2.5.02: move shuffle/back under minimap */
+/* v2.5.03: move shuffle/back under minimap */
 .leftActions{
   display:flex;
   flex-direction:column;
@@ -882,7 +890,7 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.02: mission start transition + mission complete recap */
+/* v2.5.03: mission start transition + mission complete recap */
 .screenFade{display:none !important;}
 .screenFade.on { background: rgba(0,0,0,0.55); pointer-events: all; }
 
@@ -904,7 +912,7 @@ html body #screenPlay #board.board{
 .recapNeed .n{ position:absolute; transform: translate(16px, 18px); font-size: 14px; font-weight: 950; color:#fff; text-shadow: 0 3px 10px rgba(0,0,0,0.55); }
 
 
-/* v2.5.02: center mission popup + recaps */
+/* v2.5.03: center mission popup + recaps */
 #missionModal .modalHeader, #winModal .modalHeader, #failModal .modalHeader { text-align:center; }
 #missionModal .modalHeader > div, #winModal .modalHeader > div, #failModal .modalHeader > div { width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 #missionModal .modalBody, #winModal .modalBody, #failModal .modalBody { text-align:center; }
@@ -1097,9 +1105,12 @@ border-radius: 18px;
   --fa-secondary-color: rgba(255,255,255,0.55);
 }
 
+
+
 /* =========================
    mobile portrait pass v1
-   v2.5.02
+   v2.5.x
+   paste at END of <style>
    ========================= */
 
 :root{
@@ -1139,57 +1150,43 @@ border-radius: 18px;
   #playWrap{
     display: grid !important;
     grid-template-columns: 1fr !important;
-    /* stats then grid */
-    grid-template-rows: auto minmax(0, 1fr) !important;
-    gap: 10px !important;
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+    gap: 12px !important;
     overflow: hidden !important;
   }
 
   /* make left/right panels stack */
   #playLeft{
     grid-column: 1 !important;
-    grid-row: 1 !important;  /* stats / HUD */
+    grid-row: 1 !important;
     min-height: 0 !important;
   }
   #playRight{
     grid-column: 1 !important;
-    grid-row: 2 !important;  /* grid under stats */
+    grid-row: 3 !important;
     min-height: 0 !important;
   }
 
   /* map screen: left card above map canvas */
-  #mapLeft{ order: 0 !important; }
+  #mapLeft{
+    order: 0 !important;
+  }
   #mapWrap > .card:last-child{
     order: 1 !important;
     min-height: 0 !important;
   }
   #mapCanvas{
-    height: 52vh !important;
+    height: 52vh !important; /* keeps it visible on phones */
     min-height: 280px !important;
   }
 
   /* thumb-friendly buttons */
-  button, .btn, .chip, .badge{ min-height: 44px; }
+  button, .btn, .chip, .badge{
+    min-height: 44px;
+  }
 
   /* reduce overly wide fixed minimums */
   .hudStat{ min-width: 90px !important; }
-
-  /* hide minimap on mobile */
-  #miniMap,
-  #minimap,
-  #miniMapCanvas,
-  #miniMapWrap,
-  #miniMapCard,
-  .miniMap,
-  .minimap,
-  [id*="miniMap"],
-  [id*="minimap"],
-  [class*="miniMap"],
-  [class*="minimap"]{
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
 }
 
 /* tiny phones (SE-ish) */
@@ -1198,11 +1195,39 @@ border-radius: 18px;
   .topbar{ padding-left: 10px; padding-right: 10px; }
 }
 
-  </style>
+
+/* =========================
+   v2.5.03 mobile tune-up
+   - fit map to pins (all coords)
+   - tighter HUD + board on phones
+   ========================= */
+
+@media (max-width: 520px){
+  /* tighter top HUD so board starts higher */
+  .hudStat{ min-width: 86px !important; gap: 4px !important; }
+  .hudStat .v{ font-size: 34px !important; line-height: 0.95 !important; letter-spacing: -0.6px !important; }
+  .hudStat .k{ font-size: 10px !important; max-width: 64px !important; }
+
+  /* reduce vertical weight of the left-pane card stack in portrait */
+  #playLeft .hudRowLeft{ margin-bottom: 10px !important; }
+  .boardBox{ padding: 10px !important; gap: 10px !important; }
+
+  /* make the board fit cleanly on narrow screens */
+  .board{ padding: 8px !important; gap: 6px !important; border-radius: 18px !important; }
+  .tile{ border-radius: 14px !important; }
+  .tile i{ font-size: 24px !important; }
+  .tile .svg-inline--fa{ font-size: 24px !important; width: 1em !important; height: 1em !important; }
+}
+
+@media (max-width: 380px){
+  .board{ gap: 5px !important; }
+}
+
+</style>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="">
-const "" = ""; // v2.5.02: no base64 fallback
+const "" = ""; // v2.5.03: no base64 fallback
 </script>
 
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
@@ -1215,7 +1240,7 @@ const "" = ""; // v2.5.02: no base64 fallback
   <div class="brand">
     <span style="display:inline-flex;width:34px;height:34px;border-radius:12px;background:rgba(255,124,16,0.20);border:1px solid rgba(255,255,255,0.14);align-items:center;justify-content:center;font-weight:950;">rb</span>
     <div>care rush</div>
-    <div class="badge" id="buildBadge">v2.5.02</div>
+    <div class="badge" id="buildBadge">v2.5.03</div>
   </div>
   <div style="display:flex; align-items:center; gap:10px;">
     <div class="badge" id="cityBadge">Indianapolis</div>
@@ -1365,7 +1390,7 @@ const "" = ""; // v2.5.02: no base64 fallback
   // global control surface (for inline handlers + debugging)
   window.__CR = window.__CR || {};
   "use strict";
-  const BUILD = "care rush v2.5.02";
+  const BUILD = "care rush v2.5.03";
 
 
   // title → map entrypoint (used by inline onclick)
@@ -1389,7 +1414,7 @@ let __glMarkers = [];
 
 
 
-// v2.5.02: miniMap MapLibre instance (play screen)
+// v2.5.03: miniMap MapLibre instance (play screen)
 let __miniGlMap = null;
 let __miniGlMarkers = [];
 
@@ -2169,7 +2194,7 @@ function renderMap(){
           // auto-fit camera so all pins are visible
           try{
             const pts = missions
-              .map(mm => ({lat: mm.lat ?? mm.latitude, lng: mm.lng ?? mm.longitude}))
+              .map(mm => ({lat: mm.lat ?? mm.latitude ?? mm.y, lng: mm.lng ?? mm.longitude ?? mm.x}))
               .filter(p => typeof p.lat === "number" && typeof p.lng === "number");
             if (pts.length){
               let minLng=pts[0].lng, minLat=pts[0].lat, maxLng=pts[0].lng, maxLat=pts[0].lat;
@@ -2209,7 +2234,7 @@ function renderMap(){
           // auto-fit view so all pins are visible
           try{
             const pts = missions
-              .map(mm => ({lat: mm.lat ?? mm.latitude, lng: mm.lng ?? mm.longitude}))
+              .map(mm => ({lat: mm.lat ?? mm.latitude ?? mm.y, lng: mm.lng ?? mm.longitude ?? mm.x}))
               .filter(p => typeof p.lat === "number" && typeof p.lng === "number");
             if (pts.length){
               const b = L.latLngBounds(pts.map(p => [p.lat, p.lng]));
@@ -3253,7 +3278,7 @@ function startTimer(){
 })();
 </script>
 <script>
-/* v2.5.02: move people served / moves left / time left into left pane above community needs,
+/* v2.5.03: move people served / moves left / time left into left pane above community needs,
    without touching engine code. */
 (function(){
   function moveHudStatsToLeft(){
@@ -3299,7 +3324,7 @@ function startTimer(){
   }
 })();
 
-/* v2.5.02: transition + recap helpers */
+/* v2.5.03: transition + recap helpers */
 function crGetFade(){ return document.getElementById("screenFade"); }
 function crFadeOn(){ /* disabled */ }
 function crFadeOff(){ /* disabled */ }
