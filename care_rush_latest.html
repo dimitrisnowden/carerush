@@ -20,7 +20,7 @@
   <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg">
 <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp">
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>care rush v2.5.30</title>
+  <title>care rush v2.5.31</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer"/>
   <script src="https://kit.fontawesome.com/823902fffe.js" crossorigin="anonymous"></script>
 <!-- -->
@@ -1387,7 +1387,7 @@ border-radius: 18px;
 }
 
 
-/* ===== v2.5.30: play HUD centering + tighter needs + city pill ===== */
+/* ===== v2.5.31: play HUD centering + tighter needs + city pill ===== */
 .hudRow > div{width:100%;}
 .hudRow > div{justify-content:center;}
 .hudStat{display:flex;flex-direction:column;align-items:center;text-align:center;}
@@ -1400,12 +1400,35 @@ border-radius: 18px;
 }
 
 
-/* v2.5.30: grid screen header dynamic + remove mission pill */
+/* v2.5.31: grid screen header dynamic + remove mission pill */
 #missionNameBadge{ display:none !important; }
 #playLeft .cardHeader h3{ text-transform:none; }
 @media (max-width: 820px){
   /* tighten gap between community needs and grid */
   #playWrap{ gap: 8px !important; }
+}
+
+
+/* v2.5.31: ensure play screen content is horizontally centered on mobile */
+@media (max-width: 820px){
+  #playWrap{ justify-items: center !important; }
+  #playLeft, #playRight{
+    width: 100% !important;
+    max-width: 720px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .boardBox{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    align-items: center !important;
+  }
+  #board{
+    width: 100% !important;
+    max-width: 720px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }
 
 </style>
@@ -1423,7 +1446,7 @@ border-radius: 18px;
 <div class="topbar" id="topbar">
   <div class="brand">
     <img src="https://reversebus.com/carerush/images/carerush_logo.webp" alt="care rush" style="height:34px;width:auto;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.55));" />
-    <div class="badge" id="buildBadge" style="display:none">v2.5.30</div>
+    <div class="badge" id="buildBadge" style="display:none">v2.5.31</div>
   </div>
   <div style="display:flex; align-items:center; gap:10px;">
     <div class="badge" id="cityBadge">Indianapolis</div>
@@ -1458,7 +1481,7 @@ border-radius: 18px;
       </div>
     </div>
   </div>
-  <div id="titleFooter"><span id="titleBuild">v2.5.30</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
+  <div id="titleFooter"><span id="titleBuild">v2.5.31</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
 </section>
 
 <section class="screen" id="screenMap">
@@ -1565,7 +1588,7 @@ border-radius: 18px;
   // global control surface (for inline handlers + debugging)
   window.__CR = window.__CR || {};
   "use strict";
-  const BUILD = "care rush v2.5.30";
+  const BUILD = "care rush v2.5.31";
 
 
   // title → map entrypoint (used by inline onclick)
