@@ -20,7 +20,7 @@
   <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg">
 <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp">
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>care rush v2.5.17</title>
+  <title>care rush v2.5.19</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer"/>
   <script src="https://kit.fontawesome.com/823902fffe.js" crossorigin="anonymous"></script>
 <!-- -->
@@ -1360,7 +1360,6 @@ border-radius: 18px;
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="">
-const "" = ""; // v2.5.17: no base64 fallback
 </script>
 
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
@@ -1372,13 +1371,13 @@ const "" = ""; // v2.5.17: no base64 fallback
 <div class="topbar" id="topbar">
   <div class="brand">
     <img src="https://reversebus.com/carerush/images/carerush_logo.webp" alt="care rush" style="height:34px;width:auto;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.55));" />
-    <div class="badge" id="buildBadge" style="display:none">v2.5.17</div>
+    <div class="badge" id="buildBadge" style="display:none">v2.5.19</div>
   </div>
   <div style="display:flex; align-items:center; gap:10px;">
     <div class="badge" id="cityBadge">Indianapolis</div>
     
-    <button class="btn ghost" id="btnBgm" title="Toggle music" aria-label="Toggle music"><i class="fa-solid fa-music" aria-hidden="true"></i></button>
-    <button class="btn ghost" id="btnSfx" title="Toggle sound effects" aria-label="Toggle sound effects"><i class="fa-solid fa-volume-high" aria-hidden="true"></i></button>
+    <button class="btn ghost" id="btnBgm" title="Toggle music" aria-label="Toggle music"><i class="fa-duotone fa-solid fa-music" aria-hidden="true"></i></button>
+    <button class="btn ghost" id="btnSfx" title="Toggle sound effects" aria-label="Toggle sound effects"><i class="fa-duotone fa-solid fa-bells" aria-hidden="true"></i></button>
     <button class="btn ghost" id="btnHome" title="Return to title" aria-label="Return to title"><i class="fa-solid fa-house" aria-hidden="true"></i></button>
   </div>
 </div>
@@ -1513,7 +1512,7 @@ const "" = ""; // v2.5.17: no base64 fallback
   // global control surface (for inline handlers + debugging)
   window.__CR = window.__CR || {};
   "use strict";
-  const BUILD = "care rush v2.5.17";
+  const BUILD = "care rush v2.5.19";
 
 
   // title → map entrypoint (used by inline onclick)
@@ -1857,12 +1856,23 @@ __leafletMap.setView([39.7684, -86.1581], 12);
       if (b){
         b.classList.toggle("on", bgmOn);
         b.classList.toggle("off", !bgmOn);
+        b.innerHTML = bgmOn
+          ? '<i class="fa-duotone fa-solid fa-music" aria-hidden="true"></i>'
+          : '<i class="fa-duotone fa-solid fa-music-slash" aria-hidden="true"></i>';
+        b.setAttribute("aria-pressed", bgmOn ? "true" : "false");
+        b.title = bgmOn ? "Music on" : "Music off";
       }
       if (s){
         s.classList.toggle("on", sfxOn);
         s.classList.toggle("off", !sfxOn);
+        s.innerHTML = sfxOn
+          ? '<i class="fa-duotone fa-solid fa-bells" aria-hidden="true"></i>'
+          : '<i class="fa-duotone fa-solid fa-bell-slash" aria-hidden="true"></i>';
+        s.setAttribute("aria-pressed", sfxOn ? "true" : "false");
+        s.title = sfxOn ? "SFX on" : "SFX off";
       }
     }
+
 
     function setBgm(on){
       bgmOn = !!on;
