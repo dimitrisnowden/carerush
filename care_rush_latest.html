@@ -1,0 +1,3375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script>var FALLBACK_LOGO="";</script>
+<script>
+/* v2.5.01: safety shim so board rendering never crashes if syncNeedChipSize got lost */
+(function(){
+  if(typeof window.syncNeedChipSize === "function") return;
+  window.syncNeedChipSize = function(){
+    try{
+      var t = document.querySelector("#board .tile");
+      if(!t) return;
+      var w = Math.round(t.getBoundingClientRect().width);
+      if(w>0) document.documentElement.style.setProperty("--cr-tile", w + "px");
+    }catch(e){}
+  };
+})();
+</script>
+<meta charset="utf-8"/>
+  <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg">
+<link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp">
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>care rush v2.5.01</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer"/>
+  <script src="https://kit.fontawesome.com/823902fffe.js" crossorigin="anonymous"></script>
+<!-- -->
+
+  <style>
+    :root{--bg:#0b0c10;--panel:rgba(255,255,255,0.06);--panel2:rgba(0,0,0,0.38);--stroke:rgba(255,255,255,0.14);--text:rgba(255,255,255,0.92);--muted:rgba(255,255,255,0.62);--shadow:0 20px 70px rgba(0,0,0,0.55);--food:#7f963e;--support:#ff7c10;--hygiene:#078bc9;--firstaid:#bf2b2b;--clothing:#8b2ccd;}
+    *{box-sizing:border-box;}
+    html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 20% 10%, rgba(255,124,16,0.12), transparent 60%),radial-gradient(900px 700px at 90% 20%, rgba(7,139,201,0.12), transparent 55%),var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";}
+    .screen{position:fixed;inset:0;display:none;overflow:hidden;}
+    .screen.active{display:block;}
+    .topbar{position:fixed;left:0;right:0;top:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:linear-gradient(to bottom, rgba(0,0,0,0.70), rgba(0,0,0,0.10));border-bottom:1px solid rgba(255,255,255,0.06);z-index:50;}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:0.5px;}
+    .badge{font-size:12px;padding:6px 10px;border:1px solid var(--stroke);border-radius:999px;background:rgba(255,255,255,0.04);color:var(--muted);}
+    .btn{appearance:none;border:1px solid var(--stroke);background:rgba(255,255,255,0.06);color:var(--text);padding:10px 14px;border-radius:14px;cursor:pointer;font-weight:800;transition:transform .08s ease, background .12s ease;user-select:none;}
+    .btn:hover{background:rgba(255,255,255,0.10);}
+    .btn:active{transform:translateY(1px);}
+    .btn.primary{background:var(--support);border-color:rgba(255,255,255,0.18);color:#fff;}
+.btn.primary i{--fa-primary-color:#fff;--fa-secondary-color:#fff;}
+.btn.secondary{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.22);color:#fff;}
+.btn.secondary:hover{filter:brightness(1.08);}
+.btn.secondary:active{transform:translateY(1px);}
+
+
+    .btn.ghost{background:transparent;}
+    #titleCenter{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:64px;}
+    .titleCard{width:min(980px, 92vw);border:1px solid var(--stroke);background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.22));border-radius:26px;box-shadow:var(--shadow);padding:22px;display:grid;grid-template-columns:1.2fr 0.8fr;gap:18px;}
+    .titleLeft h1{margin:0;font-size:44px;letter-spacing:-0.5px;}
+    .titleLeft p{margin:10px 0 0 0;color:var(--muted);line-height:1.45;font-weight:600;}
+    .kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;}
+    .kicker .pill{border:1px solid var(--stroke);background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:999px;font-size:12px;color:var(--muted);font-weight:800;}
+    .titleRight{border:1px solid rgba(255,255,255,0.10);border-radius:22px;background:rgba(0,0,0,0.28);padding:14px;display:flex;flex-direction:column;justify-content:space-between;min-height:260px;}
+    .metric{display:flex;flex-direction:column;gap:6px;}
+    .metric .big{font-size:34px;font-weight:950;}
+    .metric .lab{color:var(--muted);font-weight:800;font-size:12px;letter-spacing:0.6px;text-transform:uppercase;}
+    .stack{display:flex;flex-direction:column;gap:10px;}
+    #mapWrap{position:absolute;inset:64px 0 0 0;padding:14px;display:grid;grid-template-columns:360px minmax(0,1fr);gap:12px;overflow:hidden;}
+    .card{border:1px solid var(--stroke);border-radius:20px;background:rgba(255,255,255,0.05);box-shadow:0 16px 60px rgba(0,0,0,0.45);}
+    .cardHeader{padding:14px 14px 8px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .cardHeader h3{margin:0;font-size:14px;letter-spacing:0.6px;text-transform: lowercase !important;color:var(--muted);}
+    .cardBody{padding:0 14px 14px 14px;}
+    .hint{font-size:13px;color:var(--muted);line-height:1.35;font-weight:650;}
+    .sep{height:1px;background:rgba(255,255,255,0.08);margin:12px 0;}
+    .mapCanvas{position:relative;width:100%;height:100%;border-radius:20px;background:radial-gradient(900px 600px at 20% 20%, rgba(255,124,16,0.12), transparent 60%),radial-gradient(700px 540px at 80% 30%, rgba(7,139,201,0.12), transparent 55%),linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.35));overflow:hidden;border:1px solid rgba(255,255,255,0.08);}
+    .mapGridOverlay{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);background-size:44px 44px;opacity:0.35;pointer-events:none;}
+    .pin{position:absolute;width:46px;height:46px;border-radius:999px;border:2px solid rgba(255,255,255,0.25);background:rgba(0,0,0,0.55);box-shadow:0 16px 34px rgba(0,0,0,0.50);display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%, -100%);user-select:none;}
+    .pin::after{content:"";position:absolute;left:50%;top:100%;width:10px;height:10px;background:rgba(0,0,0,0.55);border-left:2px solid rgba(255,255,255,0.25);border-bottom:2px solid rgba(255,255,255,0.25);transform:translate(-50%,-50%) rotate(45deg);border-radius:2px;}
+    .pinDot{width:16px;height:16px;border-radius:999px;background:var(--support);box-shadow:0 10px 24px rgba(0,0,0,0.45);}
+    .pin.done .pinDot{background:rgba(255,255,255,0.20);}
+    .pin.done{cursor:default;}
+    #playWrap{position:absolute;inset:64px 0 0 0;padding:14px;display:grid;grid-template-columns:360px minmax(0,1fr);grid-template-rows:auto 1fr;gap:12px;overflow:hidden;}
+    #playLeft{grid-column:1;grid-row:1 / span 2;display:flex;flex-direction:column;min-height:0;}
+    #playRight{grid-column:2;grid-row:1 / span 2;display:flex;flex-direction:column;min-height:0;}
+    .hudRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .hudStat{display:flex;flex-direction:column;gap:6px;min-width:110px;align-items:center;}
+    .hudStat .v{order:1;font-size:45px;font-weight:950;letter-spacing:-0.8px;line-height:0.9;}
+    .hudStat .k{order:2;font-size:11px;letter-spacing:0.6px;text-transform: lowercase !important;color:var(--muted);font-weight:900;text-align:center;max-width:72px;line-height:1.05;white-space:normal;}
+    .hudActions{display:flex;gap:10px;align-items:center;}
+    .needsWrap{display:flex;gap:10px;flex-wrap:nowrap;padding:0 14px 14px 14px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;}
+    .needChip{width:var(--cr-tile,58px);height:var(--cr-tile,58px);aspect-ratio:1/1;min-width:0;min-height:0;flex:0 0 auto;border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:950;color:#ffffff;box-shadow:0 10px 18px rgba(0,0,0,0.28);line-height:1;}
+    .miniMapBox{padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0;}
+    .miniMap{height:260px;border-radius:18px;background:rgba(0,0,0,0.30);border:1px solid rgba(255,255,255,0.10);position:relative;overflow:hidden;}
+    .miniPin{position:absolute;width:12px;height:12px;border-radius:999px;background:var(--support);transform:translate(-50%,-50%);box-shadow:0 10px 22px rgba(0,0,0,0.55);}
+    .boardBox{padding:14px;min-height:0;display:flex;flex-direction:column;gap:12px;}
+    .board{width:100%;max-width:720px;aspect-ratio:1/1;border-radius:22px;border:1px solid rgba(255,255,255,0.10);padding:12px;display:grid;grid-template-columns:repeat(8, 1fr);grid-template-rows:repeat(8, 1fr);gap:10px;user-select:none;align-self:center;}
+    .tile{border-radius:16px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:950;color:#000000;box-shadow:0 12px 22px rgba(0,0,0,0.25);transition:transform .08s ease, filter .12s ease;will-change:transform;}
+.tile.donation i{color:#fff;--fa-primary-color:#fff;--fa-secondary-color:#fff}
+.tile.donation i.fa-beat-fade{--fa-animation-duration:1.1s}
+
+    .tile:hover{filter:brightness(1.03);}
+    .tile:active{transform:scale(0.98);}
+    .tile.sel{outline:3px solid rgba(255,255,255,0.65);}
+    .tile .icon{font-size:15px;letter-spacing:0.5px;}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.60);display:none;z-index:200;}
+    .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px, 92vw);border:1px solid rgba(255,255,255,0.16);border-radius:22px;background:rgba(15,15,15,0.92);box-shadow:var(--shadow);padding:16px;display:none;z-index:201;}
+    .modalHeader{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;}
+    .modalHeader h2{margin:0;font-size:18px;letter-spacing:-0.2px;}
+    .modalHeader p{margin:6px 0 0 0;color:var(--muted);font-weight:650;}
+    .modalBody{margin-top:12px;}
+    .modalFooter{margin-top:14px;display:flex;gap:10px;justify-content:flex-end;}
+    
+/* mission recap (win) centering + spacing */
+#winModal .modalHeader{justify-content:center;}
+#winModal .modalHeader > div{width:100%; text-align:center;}
+#winModal .modalBody{margin-top:10px; text-align:center;}
+#winModal .recapNeeds{justify-content:center;}
+#winModal .modalFooter{justify-content:center; margin-top:18px;}
+#winModal #btnBackToMap{min-width:220px;}
+.small{font-size:12px;color:var(--muted);font-weight:650;}
+
+    .tile i{ font-size:22px; color:rgba(0,0,0,0.78); }
+    .tile .fallback{ font-size:11px; font-weight:950; color:rgba(0,0,0,0.75); letter-spacing:0.6px; display:none; }
+    .tile.sel{ outline:3px solid rgba(255,255,255,0.70); box-shadow: 0 0 0 6px rgba(255,124,16,0.18), 0 18px 28px rgba(0,0,0,0.30); }
+    @keyframes pulseSel { 0%{ transform:scale(1);} 50%{ transform:scale(1.03);} 100%{ transform:scale(1);} }
+    .tile.sel{ animation:pulseSel 0.55s ease-in-out; }
+
+  
+/* Icon styling (duotone only) */
+    .tile{ position:relative; }
+    /* Font Awesome kit may render as <i> or replace into <svg>. Style both. */
+    .tile i,
+    .tile .svg-inline--fa{
+      color:rgba(255,255,255,0.96);
+      filter:drop-shadow(0 10px 16px rgba(0,0,0,0.30));
+    }
+    .tile i{ font-size:30px; }
+    .tile .svg-inline--fa{ font-size:30px; width:1em; height:1em; }
+
+    /* Duotone colors via CSS variables (works on SVG output) */
+    .tile i.cr-duo,
+    .tile .svg-inline--fa.fa-duotone{
+      --fa-primary-color: rgba(255,255,255,0.96);
+      --fa-secondary-color: rgba(255,255,255,0.42);
+      --fa-secondary-opacity: 1;
+    }
+
+    .tile .fallback{ font-size:11px; font-weight:950; color:rgba(0,0,0,0.75); letter-spacing:0.6px; display:none; }
+    .tile.sel{ outline:3px solid rgba(255,255,255,0.72); box-shadow: 0 0 0 6px rgba(255,124,16,0.18), 0 18px 28px rgba(0,0,0,0.30); }
+    @keyframes pulseSel { 0%{ transform:scale(1);} 50%{ transform:scale(1.03);} 100%{ transform:scale(1);} }
+    .tile.sel{ animation:pulseSel 0.55s ease-in-out; }
+
+    /* ensure map anchors absolute pins */
+    #mapCanvas{ position: relative; overflow: hidden; }
+
+    /* pins are icons only */
+    .pinIcon{ transform: scale(2); 
+      pointer-events:auto;
+      position:absolute;
+      transform: translate(-50%, -100%);
+      cursor:pointer;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,0.55));
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      z-index: 6;
+    }
+    .pinIcon.selected{
+      filter: drop-shadow(0 0 12px rgba(255,124,16,0.55)) drop-shadow(0 16px 22px rgba(0,0,0,0.55));
+      animation: pinPulse 1.15s ease-in-out infinite;
+    }
+
+
+  /* map iframe layer (background) */
+  #mapCanvas{ position: relative; overflow:hidden; }
+  #mapFrame{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    opacity:0.95;
+    filter: saturate(1.02) contrast(1.05);
+    pointer-events:none; /* keep pins clickable */
+    z-index:0;
+    background:#0c0f13;
+  }
+  .mapAttribution{
+    position:absolute;
+    right:10px;
+    bottom:10px;
+    z-index:3;
+    font-size:11px;
+    letter-spacing:0.2px;
+    color: rgba(255,255,255,0.75);
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 6px 8px;
+    border-radius: 12px;
+    text-transform: lowercase;
+    pointer-events:none;
+  }
+  /* keep pins above map */
+  .pinIcon{ z-index:6; }
+
+
+  #mapCanvas::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+    background:
+      radial-gradient(1200px 800px at 30% 20%, rgba(255,124,16,0.18), transparent 60%),
+      radial-gradient(900px 700px at 70% 80%, rgba(7,139,201,0.16), transparent 62%),
+      linear-gradient(to bottom, rgba(0,0,0,0.35), rgba(0,0,0,0.10));
+    mix-blend-mode: screen;
+  }
+
+
+  /* dark map treatment */
+  #mapFrame{
+    filter: grayscale(0.25) saturate(0.65) contrast(1.25) brightness(0.55) hue-rotate(190deg);
+  }
+  .mapDarkOverlay{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+    background:
+      radial-gradient(120% 90% at 50% 35%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.65) 70%, rgba(0,0,0,0.82) 100%),
+      linear-gradient(180deg, rgba(3,7,12,0.35) 0%, rgba(3,7,12,0.70) 100%);
+    mix-blend-mode: multiply;
+  }
+
+
+  /* maptiler/leaflet map */
+  #mapCanvas{ position:relative; overflow:hidden; }
+  #leafletMap{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border-radius: 18px;
+    background:#0b0f14;
+  }
+  .leaflet-control-container{ filter: drop-shadow(0 8px 14px rgba(0,0,0,0.35)); }
+  .leaflet-container{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+  .leaflet-control-attribution{
+    background: rgba(0,0,0,0.45) !important;
+    color: rgba(255,255,255,0.75) !important;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 12px;
+    padding: 6px 8px;
+    margin: 10px !important;
+  }
+  .leaflet-control-attribution a{ color: rgba(255,255,255,0.85) !important; text-decoration: none; }
+
+
+  #mapStatus{
+    position:absolute;
+    right:14px;
+    top:14px;
+    z-index:800;
+    font-size:12px;
+    letter-spacing:0.3px;
+    text-transform: lowercase;
+    padding:8px 10px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.35);
+    color: rgba(255,255,255,0.85);
+    pointer-events:none;
+    display:none;
+  }
+
+
+/* maplibre gl map (preferred for exact maptiler styling) */
+#mapGL{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border-radius: 18px;
+  background:#0b0f14;
+  display:none; /* enabled when GL loads */
+}
+.maplibregl-ctrl-attrib{
+  background: rgba(0,0,0,0.45) !important;
+  color: rgba(255,255,255,0.75) !important;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 6px 8px;
+  margin: 10px !important;
+}
+.maplibregl-ctrl-attrib a{ color: rgba(255,255,255,0.85) !important; text-decoration: none; }
+.crGLPin{ cursor:pointer; transform: translate(-50%,-100%); }
+
+
+/* mission pin sizing */
+.crPinWrap{
+  font-size: 52px; /* ~2x bigger than prior */
+  line-height: 1;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.55));
+}
+/* keep anchor translate, then scale up */
+.crGLPin{ transform: translate(-50%,-100%) scale(2); transform-origin: 50% 100%; }
+
+/* --- animations v2.5.01 --- */
+@keyframes crPop { 0%{transform:scale(1)} 40%{transform:scale(0.92)} 100%{transform:scale(1)} }
+.tile.cr-pop { animation: crPop 140ms ease; }
+@keyframes crNope { 0%{transform:translateX(0)} 25%{transform:translateX(-6px)} 50%{transform:translateX(6px)} 75%{transform:translateX(-4px)} 100%{transform:translateX(0)} }
+/* --- animations v2.5.01 --- */
+@keyframes crClear { 0%{transform:scale(1);opacity:1;filter:none} 100%{transform:scale(0.25);opacity:0;filter:blur(1px)} }
+.tile.cr-clear { animation: crClear 200ms ease forwards; }
+@keyframes crSpawn {
+  0%   { transform: translateY(var(--cr-spawn-y, -700px)) scale(0.98); opacity: 0.25; }
+  70%  { transform: translateY(10px) scale(1.02); opacity: 1; }
+  88%  { transform: translateY(-6px) scale(0.995); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes crFall {
+  0%   { transform: translateY(var(--cr-fall-y, -280px)) scale(1); }
+  72%  { transform: translateY(10px) scale(1.01); }
+  88%  { transform: translateY(-6px) scale(0.995); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.tile.cr-spawn { animation: crSpawn 420ms cubic-bezier(.18,.9,.2,1) both; will-change: transform; }
+.tile.cr-fall { animation: crFall var(--cr-fall-dur, 260ms) cubic-bezier(.18,.85,.2,1) both; will-change: transform; }
+.tile.cr-flip { transition: transform 240ms cubic-bezier(.2,.9,.2,1); }
+
+
+/* --- title screen background (single-file embedded image) --- */
+:root {
+  --title-bg: none;
+}
+#screenTitle {
+  background-image: var(--title-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* keep it clean: title screen = background + one button */
+#screenTitle #titleCenter {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+#screenTitle .titleCard {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+#screenTitle .titleLeft,
+#screenTitle .metric,
+#screenTitle .kicker,
+#screenTitle .sep,
+#screenTitle .small,
+#screenTitle #btnDaily,
+#screenTitle #btnLevels,
+#screenTitle #btnWinToMap,
+#screenTitle .modalFooter {
+  display: none !important;
+}
+#screenTitle .titleRight {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+#screenTitle .stack {
+  gap: 0 !important;
+}
+#screenTitle #btnCareToPlay {
+  font-size: 22px;
+  padding: 16px 34px;
+  border-radius: 18px;
+  box-shadow: 0 18px 38px rgba(0,0,0,0.45);
+}
+/* --- title screen polish v2.5.01 (safe) --- */
+#screenTitle{ position: relative; background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg'); background-size: cover; background-position: center; background-repeat:no-repeat; }
+#screenTitle::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,0.35);
+  pointer-events:none;
+}
+#screenTitle *{ position: relative; } /* keep content above overlay */
+
+#btnTitleStart{
+  position: absolute !important;
+  left: 50% !important;
+  top: 72% !important;
+  transform: translate(-50%, -50%) !important;
+  color: #fff !important;
+  font-weight: 950 !important;
+  letter-spacing: .4px !important;
+  text-transform: lowercase !important;
+  padding: 16px 26px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  background: rgba(255,124,16,0.92) !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45) !important;
+  cursor: pointer !important;
+  animation: crPulse 1.4s ease-in-out infinite;
+}
+#btnTitleStart:hover{ filter: brightness(1.07); transform: translate(-50%,-50%) translateY(-1px) scale(1.02) !important; }
+#btnTitleStart:active{ transform: translate(-50%,-50%) scale(0.99) !important; }
+@keyframes crPulse{
+  0%,100%{ box-shadow: 0 18px 40px rgba(0,0,0,0.45); }
+  50%{ box-shadow: 0 18px 52px rgba(255,124,16,0.35), 0 18px 40px rgba(0,0,0,0.45); }
+}
+
+/* --- title screen override v2.5.01 --- */
+#screenTitle {
+  position: relative !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+#screenTitle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  pointer-events: none;
+}
+#screenTitle #titleCenter {
+  position: relative !important;
+  width: 100% !important;
+  height: 100vh !important;
+  display: block !important;
+}
+#screenTitle .titleCard {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+/* hide everything except the main start button */
+#screenTitle .titleLeft,
+#screenTitle .metric,
+#screenTitle .kicker,
+#screenTitle .sep,
+#screenTitle .small,
+#screenTitle #btnDaily,
+#screenTitle #btnLevels,
+#screenTitle .modalFooter {
+  display: none !important;
+}
+#screenTitle .titleRight {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+#screenTitle .stack {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+#btnCareToPlay {
+  position: absolute !important;
+  left: 50% !important;
+  top: 72% !important;
+  transform: translate(-50%, -50%) !important;
+  color: #ffffff !important;
+  font-weight: 950 !important;
+  letter-spacing: .4px !important;
+  text-transform: lowercase !important;
+  padding: 16px 26px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  background: rgba(255,124,16,0.92) !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45) !important;
+  cursor: pointer !important;
+  animation: crPulseTitle 1.4s ease-in-out infinite !important;
+}
+#btnCareToPlay:hover {
+  filter: brightness(1.07) !important;
+  transform: translate(-50%,-50%) translateY(-1px) scale(1.02) !important;
+}
+#btnCareToPlay:active {
+  transform: translate(-50%,-50%) scale(0.99) !important;
+}
+@keyframes crPulseTitle {
+  0%,100%{ box-shadow: 0 18px 40px rgba(0,0,0,0.45); }
+  50%{ box-shadow: 0 18px 52px rgba(255,124,16,0.35), 0 18px 40px rgba(0,0,0,0.45); }
+}
+
+/* --- title screen fix v2.5.01 --- */
+#screenTitle{
+  min-height: 100vh !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9990 !important;
+  overflow: hidden !important;
+}
+#screenTitle::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,0.38);
+  pointer-events:none;
+}
+/* remove the visible "container panel" look */
+#screenTitle .titleRight,
+#screenTitle .titleLeft,
+#screenTitle .titleWrap,
+#screenTitle .titleInner,
+#screenTitle .titleCard,
+#screenTitle .titlePanel{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  backdrop-filter: none !important;
+}
+/* hide EVERYTHING on title screen except the button */
+#screenTitle *{
+  visibility: hidden !important;
+}
+#screenTitle #btnCareToPlay{
+  visibility: visible !important;
+  position: fixed !important;
+  left: 50% !important;
+  top: 72% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 9992 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  color: #ffffff !important;
+  font-weight: 950 !important;
+  letter-spacing: .4px !important;
+  text-transform: lowercase !important;
+
+  padding: 16px 28px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  background: rgba(255,124,16,0.92) !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45) !important;
+  cursor: pointer !important;
+
+  animation: crPulse 1.4s ease-in-out infinite !important;
+}
+#screenTitle #btnCareToPlay *{
+  visibility: visible !important;
+  color: #ffffff !important;
+}
+#screenTitle #btnCareToPlay:hover{
+  filter: brightness(1.07) !important;
+  transform: translate(-50%,-50%) translateY(-1px) scale(1.02) !important;
+}
+#screenTitle #btnCareToPlay:active{
+  transform: translate(-50%,-50%) scale(0.99) !important;
+}
+@keyframes crPulse{
+  0%,100%{ box-shadow: 0 18px 40px rgba(0,0,0,0.45); }
+  50%{ box-shadow: 0 18px 56px rgba(255,124,16,0.35), 0 18px 40px rgba(0,0,0,0.45); }
+}
+
+/* --- title logo v2.5.01 --- */
+#screenTitle #titleLogo{
+  visibility: visible !important;
+  position: fixed !important;
+  left: 50% !important;
+  top: 28% !important;
+  transform: translate(-50%, -50%) scale(0.92);
+  z-index: 9992 !important;
+  width: min(560px, 78vw);
+  height: auto;
+  filter: drop-shadow(0 18px 28px rgba(0,0,0,0.55));
+  animation: crLogoIn 820ms cubic-bezier(.2, .9, .2, 1) 1,
+             crLogoFloat 3.2s ease-in-out 900ms infinite;
+  pointer-events: none;
+}
+@keyframes crLogoIn{
+  0%{ opacity: 0; transform: translate(-50%, -50%) scale(0.78); }
+  65%{ opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
+  100%{ opacity: 1; transform: translate(-50%, -50%) scale(0.92); }
+}
+@keyframes crLogoFloat{
+  0%,100%{ transform: translate(-50%, -50%) scale(0.92) translateY(0px); }
+  50%{ transform: translate(-50%, -50%) scale(0.92) translateY(-10px); }
+}
+
+/* --- title logo perf tweaks v2.5.01 --- */
+#screenTitle #titleLogo{
+  background: transparent !important;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92) translateY(6px);
+  transition: opacity 220ms ease, transform 420ms cubic-bezier(.2,.9,.2,1);
+}
+#screenTitle #titleLogo.crLoaded{
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(0.92) translateY(0px);
+}
+
+/* --- title button jazz v2.5.01 --- */
+#screenTitle #btnCareToPlay{
+  gap: 12px !important;
+  padding: 18px 30px !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255,255,255,0.28) !important;
+  background: linear-gradient(135deg, rgba(255,124,16,0.98), rgba(255,189,89,0.92)) !important;
+  position: fixed !important;
+  overflow: hidden !important;
+}
+#screenTitle #btnCareToPlay::before{
+  content:"";
+  position:absolute;
+  inset:-20%;
+  background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.22), transparent 55%);
+  transform: translateX(-40%) rotate(10deg);
+  opacity: .75;
+  pointer-events:none;
+}
+#screenTitle #btnCareToPlay::after{
+  content:"";
+  position:absolute;
+  top:-120%;
+  left:-40%;
+  width: 50%;
+  height: 320%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  transform: rotate(18deg);
+  animation: crSheen 2.6s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes crSheen{
+  0%{ left:-60%; opacity:0; }
+  18%{ opacity:.55; }
+  45%{ left:140%; opacity:0; }
+  100%{ left:140%; opacity:0; }
+}
+#screenTitle #btnCareToPlay .ctaIcon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+#screenTitle #btnCareToPlay .ctaIcon i{
+  --fa-primary-color: #ffffff;
+  --fa-secondary-color: #ffffff;
+  --fa-primary-opacity: 1;
+  --fa-secondary-opacity: .55;
+  font-size: 18px;
+}
+#screenTitle #btnCareToPlay .ctaText{
+  position: relative;
+  z-index: 2;
+}
+#screenTitle #btnCareToPlay:hover{
+  filter: brightness(1.08) saturate(1.05) !important;
+}
+#screenTitle #btnCareToPlay:active{
+  filter: brightness(0.98) !important;
+}
+
+/* --- board background v2.5.01 --- */
+#board{
+  position: relative;
+}
+#board::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,0.22);
+  pointer-events:none;
+}
+#board > *{
+  position: relative;
+  z-index: 1;
+}
+
+/* --- playwrap background v2.5.01 --- */
+#playWrap{
+  position: relative;
+  background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+#playWrap::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,0.22);
+  pointer-events:none;
+}
+#playWrap > *{
+  position: relative;
+  z-index: 1;
+}
+
+/* --- mapwrap background v2.5.01 (minimal, non-invasive) --- */
+#mapWrap{
+  background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* --- darker tints v2.5.01 --- */
+/* mapwrap: keep bg image but add a darker tint via gradient layer */
+#mapWrap{
+  background-image:
+    linear-gradient(rgba(0,0,0,0.42), rgba(0,0,0,0.42)),
+    url('https://reversebus.com/carerush/images/carerush_bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+}
+
+/* playwrap (grid area): apply a darker tint without changing layout or stacking */
+#playWrap{
+  background-color: rgba(0,0,0,0.22);
+  background-blend-mode: multiply;
+}
+
+
+/* --- v2.5.01: stats moved to left pane (dom move) --- */
+.hudRowLeft{margin-bottom:12px;}
+#playLeft .hudRowLeft .hudStat{display:flex;flex-direction:column;gap:6px;min-width:110px;align-items:center;}
+#playLeft .hudRowLeft .k{text-transform: lowercase;}
+
+
+/* v2.5.01: keep needs chips on one line */
+.needsWrap::-webkit-scrollbar{height:6px;}
+.needsWrap::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.18);border-radius:999px;}
+.needsWrap::-webkit-scrollbar-track{background:rgba(0,0,0,0.0);}
+
+
+/* v2.5.01: keep stats on one line */
+.hudRowLeft > div[style*="display:flex"]{flex-wrap:nowrap !important;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;}
+.hudRowLeft > div[style*="display:flex"]::-webkit-scrollbar{height:6px;}
+.hudRowLeft > div[style*="display:flex"]::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.18);border-radius:999px;}
+
+
+/* v2.5.01: tighten stats spacing so it fits without scroll */
+.hudRowLeft > div[style*="display:flex"]{gap:8px !important;justify-content:space-between;}
+#playLeft .hudRowLeft .hudStat{min-width:94px;}
+
+
+/* v2.5.01: darker left pane tint */
+#playLeft{
+  background: rgba(0,0,0,0.62) !important;
+  border: 1px solid rgba(255,255,255,0.10);
+  backdrop-filter: blur(10px);
+}
+
+
+/* v2.5.01: remove board tint */
+#board{
+}
+
+
+/* v2.5.01: force board container fully transparent (no tint) */
+html body #screenPlay #board.board{
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+
+/* v2.5.01: responsive community-need chips (no horizontal scroll) */
+.leftPane, .leftCol { overflow-x: hidden; }
+
+.needsRow, .needRow, .needChips, .needsChips {
+  --needGap: 8px;
+  --needChipSize: clamp(40px, calc((100% - (4 * var(--needGap))) / 5), 58px);
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--needGap);
+  justify-content: space-between;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+.needsRow .needChip, .needRow .needChip, .needChips .needChip, .needsChips .needChip {
+  width: var(--needChipSize) !important;
+  height: var(--needChipSize) !important;
+  min-width: 0 !important;
+  flex: 0 0 auto;
+  border-radius: calc(var(--needChipSize) * 0.28) !important;
+  font-size: clamp(16px, calc(var(--needChipSize) * 0.34), 22px) !important;
+  line-height: 1 !important;
+}
+
+
+/* v2.5.01: hard-fix needs chips overflow (targets actual container: .needsWrap#needsChips + any .flexscroll wrapper) */
+#needsChips.needsWrap,
+.needsWrap#needsChips,
+.needsWrap.flexscroll,
+#needsChips.flexscroll{
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+#needsChips.needsWrap,
+.needsWrap#needsChips{
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  align-items: center !important;
+  justify-items: stretch !important;
+}
+
+/* chips: square + scale down automatically with grid column width, capped at tile size */
+#needsChips .needChip{
+  width: 100% !important;
+  max-width: 58px !important;
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
+  min-width: 0 !important;
+  justify-self: stretch !important;
+  border-radius: 16px !important;
+  font-size: clamp(16px, 2.0vw, 22px) !important;
+  line-height: 1 !important;
+}
+
+/* ensure the left pane never shows a horizontal bar */
+#screenPlay .leftPane,
+#screenPlay .leftCol{
+  overflow-x: hidden !important;
+}
+
+
+/* v2.5.01: live minimap (maptiler/maplibre) */
+.miniMap .maplibregl-canvas{ outline:none; }
+.miniGlDot{
+  width: 12px; height: 12px; border-radius: 999px;
+  background: #bf2b2b;
+  box-shadow: 0 10px 18px rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.35);
+}
+.miniGlDot.done{ background: #c1ff72; }
+.miniGlDot.active{
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.85);
+  box-shadow: 0 14px 26px rgba(0,0,0,0.45);
+}
+
+
+/* v2.5.01: minimap uses same pin icon logic as main map */
+.miniGLPin{ display:flex; align-items:flex-end; justify-content:center; }
+.miniGLPin .crPinWrap{ display:flex; align-items:flex-end; justify-content:center; }
+.miniGLPin i{ filter: drop-shadow(0 10px 18px rgba(0,0,0,0.45)); transform: scale(0.75); transform-origin: bottom center; }
+.miniGLPin.active i{ animation: crPulse 1.2s ease-in-out infinite; }
+
+
+/* v2.5.01: move shuffle/back under minimap */
+.leftActions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:12px;
+}
+.leftActions .btn{
+  width:100%;
+  justify-content:center;
+}
+
+
+/* v2.5.01: mission start transition + mission complete recap */
+.screenFade{display:none !important;}
+.screenFade.on { background: rgba(0,0,0,0.55); pointer-events: all; }
+
+.mapWrap.transitioning { filter: saturate(1.05) contrast(1.05); }
+.mapWrap.transitioning .mapPanel { transform-origin: center; transition: transform .35s ease; }
+.mapWrap.transitioning.zoom .mapPanel { transform: scale(1.04); }
+
+.modal.recap .modalBody{ display:flex; flex-direction:column; gap:14px; }
+.recapRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.recapBig{ font-size: 44px; font-weight: 950; line-height: 1; color:#fff; }
+.recapLabel{ font-size: 12px; letter-spacing: .6px; text-transform: lowercase; color: rgba(255,255,255,.78); font-weight: 900; }
+.recapNeeds{ display:flex; flex-wrap:wrap; gap:10px; }
+.recapNeed{
+  width: 58px; height: 58px; border-radius: 16px;
+  display:flex; align-items:center; justify-content:center;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.35);
+}
+.recapNeed .n{ position:absolute; transform: translate(16px, 18px); font-size: 14px; font-weight: 950; color:#fff; text-shadow: 0 3px 10px rgba(0,0,0,0.55); }
+
+
+/* v2.5.01: center mission popup + recaps */
+#missionModal .modalHeader, #winModal .modalHeader, #failModal .modalHeader { text-align:center; }
+#missionModal .modalHeader > div, #winModal .modalHeader > div, #failModal .modalHeader > div { width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+#missionModal .modalBody, #winModal .modalBody, #failModal .modalBody { text-align:center; }
+#missionNeedsPreview, .recapNeeds { display:flex; justify-content:center !important; align-items:center; gap:10px; flex-wrap:wrap; }
+#missionModal .modalFooter { justify-content:center; gap:10px; }
+
+/* win celebration */
+@keyframes cr-pop { 0%{ transform:scale(.92); opacity:0 } 100%{ transform:scale(1); opacity:1 } }
+@keyframes cr-glow { 0%{ box-shadow:0 0 0 rgba(255,255,255,0) } 100%{ box-shadow:0 0 40px rgba(193,255,114,.35) } }
+@keyframes cr-bounce { 0%,100%{ transform:translateY(0)} 50%{ transform:translateY(-6px)} }
+#winModal.celebrate { animation: cr-pop .28s ease-out, cr-glow 1.2s ease-in-out infinite alternate; }
+#winModal.celebrate #winPeople { display:inline-block; animation: cr-bounce .9s ease-in-out 2; }
+
+/* fail shake */
+@keyframes cr-shake { 0%,100%{ transform:translateX(0)} 20%{ transform:translateX(-8px)} 40%{ transform:translateX(8px)} 60%{ transform:translateX(-6px)} 80%{ transform:translateX(6px)} }
+#failModal.failshake { animation: cr-pop .25s ease-out, cr-shake .45s ease-in-out; }
+
+
+  /* map: today served box */
+  .todayServedBox{
+    margin: 10px 0 12px 0;
+    padding: 10px 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.30);
+    text-align: center;
+  }
+  .todayServedBox .k{
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: lowercase;
+    color: rgba(255,255,255,0.7);
+    font-weight: 900;
+    margin-bottom: 6px;
+    line-height: 1.1;
+  }
+  .todayServedBox .v{
+    font-size: 18px;
+    font-weight: 950;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .todayServedBox .v #todayServedNum{
+    font-size: 26px;
+    font-weight: 950;
+    display: inline-block;
+    margin-right: 6px;
+  }
+
+
+/* recap spacing + today total */
+.todayTotal{
+  margin-top: 10px;
+  font-weight: 950;
+  text-align: center;
+  color: #fff;
+  opacity: .92;
+}
+.todayTotal .n{ color: #c1ff72; }
+#winModal .card, #failModal .card, #winModal .modalCard, #failModal .modalCard, #winModal .recapCard, #failModal .recapCard{ text-align:center; }
+#winModal .cardBody, #failModal .cardBody,
+#winModal .modalBody, #failModal .modalBody,
+#winModal .recapBody, #failModal .recapBody{
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+}
+
+
+/* mission start micro-transition */
+@keyframes crPlayIntro {
+  from { opacity: 0; transform: translateY(10px); filter: blur(0.6px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.playIntroAnim{animation:none !important;}
+
+
+/* recap count-up */
+.counting { transform-origin: center; animation: crCountPop .22s ease both; }
+@keyframes crCountPop { from { transform: scale(.96); opacity:.85; } to { transform: scale(1); opacity:1; } }
+
+
+/* core match feel */
+@keyframes crWiggle {
+  0% { transform: translateX(0) scale(1) rotate(0deg); }
+  18% { transform: translateX(-10px) scale(1.02) rotate(-1.2deg); }
+  36% { transform: translateX(10px) scale(1.02) rotate(1.2deg); }
+  54% { transform: translateX(-7px) scale(1.01) rotate(-0.9deg); }
+  72% { transform: translateX(6px) scale(1.01) rotate(0.7deg); }
+  100% { transform: translateX(0) scale(1) rotate(0deg); }
+}
+20% { transform: translateX(-7px) rotate(-1deg); }
+  40% { transform: translateX(7px) rotate(1deg); }
+  60% { transform: translateX(-5px) rotate(-0.8deg); }
+  80% { transform: translateX(4px) rotate(0.6deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+.tile.cr-wiggle { animation: crWiggle 320ms cubic-bezier(.2,.9,.2,1) both; }
+
+@keyframes crPunch {
+  0% { transform: scale(1); filter: brightness(1); }
+  35% { transform: scale(1.22); filter: brightness(1.25); }
+  70% { transform: scale(0.98); filter: brightness(1.05); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+45% { transform: scale(1.14); filter: brightness(1.18); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+.tile.cr-punch { animation: crPunch 300ms cubic-bezier(.15,.9,.2,1) both; }
+
+
+/* title start button: label + icon */
+button[onclick*="startTitle"]{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+
+/* mission popup buttons */
+.btnPrimary.btnMissionStart{
+color: #fff;
+  font-weight: 950;
+  letter-spacing: 0.2px;
+  text-transform: lowercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: linear-gradient(135deg, rgba(255,124,16,0.95), rgba(255,189,89,0.92));
+  box-shadow: 0 14px 26px rgba(0,0,0,0.35);
+  animation: crGlowPulse 1.8s ease-in-out infinite;
+  font-size: 20px;
+  padding: 16px 28px;
+  min-height: 56px;
+  min-width: 180px;
+}
+
+.btnMissionNotNow{
+  font-size: 16px;
+  padding: 14px 22px;
+  min-height:54px;
+  min-width: 150px;
+}
+
+.btnPrimary.btnMissionStart i{
+  color: #fff;
+}
+.btnSecondary.btnMissionLater{
+  color: rgba(255,255,255,0.88) !important;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  text-transform: lowercase;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: none;
+}
+.btnSecondary.btnMissionLater:hover{
+  background: rgba(255,255,255,0.10);
+}
+@keyframes crGlowPulse{
+  0%{ filter: brightness(1); transform: translateY(0); }
+  50%{ filter: brightness(1.08); transform: translateY(-1px); }
+  100%{ filter: brightness(1); transform: translateY(0); }
+}
+
+
+/* special tiles: black tile + white animated icon */
+.tile.specialTile,
+.tile.isSpecial,
+.tile.special {
+  background: #000 !important;
+  color: #fff !important;
+}
+.tile.specialTile i,
+.tile.isSpecial i,
+.tile.special i {
+  color: #fff !important;
+  --fa-primary-color: #ffffff;
+  --fa-secondary-color: rgba(255,255,255,0.55);
+}
+/* keep duotone from rendering as "black on black" if FA variables are used */
+.tile.specialTile i.fa-duotone,
+.tile.isSpecial i.fa-duotone,
+.tile.special i.fa-duotone {
+  --fa-primary-color: #ffffff;
+  --fa-secondary-color: rgba(255,255,255,0.55);
+}
+
+
+
+/* =========================
+   mobile portrait pass v1
+   v2.5.x
+   paste at END of <style>
+   ========================= */
+
+:root{
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --topbar-base: 64px;
+}
+
+/* notch-safe topbar */
+.topbar{
+  padding-top: var(--safe-top);
+  height: calc(var(--topbar-base) + var(--safe-top));
+}
+
+/* keep screens from hiding behind the topbar */
+#mapWrap,
+#playWrap{
+  position: absolute !important;
+  top: calc(var(--topbar-base) + var(--safe-top)) !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: var(--safe-bottom) !important;
+  padding: 12px !important;
+}
+
+/* portrait-first responsive layout */
+@media (max-width: 820px){
+  /* collapse both main 2-column grids into 1 column */
+  #mapWrap{
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+    gap: 12px !important;
+    overflow: hidden !important;
+  }
+
+  #playWrap{
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+    gap: 12px !important;
+    overflow: hidden !important;
+  }
+
+  /* make left/right panels stack */
+  #playLeft{
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-height: 0 !important;
+  }
+  #playRight{
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    min-height: 0 !important;
+  }
+
+  /* map screen: left card above map canvas */
+  #mapLeft{
+    order: 0 !important;
+  }
+  #mapWrap > .card:last-child{
+    order: 1 !important;
+    min-height: 0 !important;
+  }
+  #mapCanvas{
+    height: 52vh !important; /* keeps it visible on phones */
+    min-height: 280px !important;
+  }
+
+  /* thumb-friendly buttons */
+  button, .btn, .chip, .badge{
+    min-height: 44px;
+  }
+
+  /* reduce overly wide fixed minimums */
+  .hudStat{ min-width: 90px !important; }
+}
+
+/* tiny phones (SE-ish) */
+@media (max-width: 380px){
+  #mapCanvas{ height: 46vh !important; }
+  .topbar{ padding-left: 10px; padding-right: 10px; }
+}
+
+</style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="">
+const "" = ""; // v2.5.01: no base64 fallback
+</script>
+
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+</head>
+
+
+<body>
+<div class="topbar" id="topbar">
+  <div class="brand">
+    <span style="display:inline-flex;width:34px;height:34px;border-radius:12px;background:rgba(255,124,16,0.20);border:1px solid rgba(255,255,255,0.14);align-items:center;justify-content:center;font-weight:950;">rb</span>
+    <div>care rush</div>
+    <div class="badge" id="buildBadge">v2.5.01</div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div class="badge" id="cityBadge">Indianapolis</div>
+    
+    <button class="btn ghost" id="btnBgm" title="Toggle music">bgm</button>
+    <button class="btn ghost" id="btnSfx" title="Toggle sound effects">sfx</button>
+    <button class="btn ghost" id="btnHome" title="Return to title">home</button>
+  </div>
+</div>
+
+<section class="screen active" id="screenTitle">
+  <div id="titleCenter">
+    <div class="titleCard">
+      <div class="titleLeft">
+        <h1>kit match</h1>
+        <p>match essentials. chain combos. translate clears into people served.</p>
+        <div class="kicker">
+          <div class="pill">5 tiles</div><div class="pill">people served &gt; score</div><div class="pill">daily missions</div><div class="pill">indy map</div>
+        </div>
+        <div class="sep"></div>
+        <div class="small">build focus: stable flow (title → map → mission → play) with clean layout.</div>
+      </div>
+      <div class="titleRight">
+        <div class="metric"><div class="lab">people served</div><div class="big" id="peopleServedTitle">0</div></div>
+        <div class="stack">
+          <button class="btn primary" id="btnCareToPlay" onclick="__CR.startTitle()">do you care to play? <i class="fa-duotone fa-solid fa-circle-play fa-xl fa-bounce" aria-hidden="true"></i></button>
+          <button class="btn" id="btnDaily">daily kit</button>
+          <button class="btn" id="btnLevels" disabled style="opacity:0.55; cursor:not-allowed;">level select (soon)</button>
+        </div>
+      </div>
+      <div class="modalFooter">
+        <button class="btn" id="btnWinToMap">back to map</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="screenMap">
+  <div id="mapWrap">
+  <div id="mapHint" class="hint" style="position:absolute;left:14px;bottom:10px;z-index:5;background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.12);padding:6px 10px;border-radius:12px;">resets daily · © openstreetmap contributors</div>
+    <div class="card" id="mapLeft">
+      <div class="cardHeader"><h3>missions</h3><span class="badge" id="missionCountBadge">3 pins</span></div>
+      <div class="cardBody">
+        <div class="todayServedBox" id="todayServedBox">
+          <div class="k">today you served</div>
+          <div class="v"><span id="todayServedNum">0</span> people</div>
+        </div>
+
+        <div class="hint">tap a pin. you’ll see “there are 103 people that need your help” plus needs, moves, and time. beat it → pin completes for today.</div>
+        <div class="sep"></div>
+        <div class="hint"><b>note:</b> this build intentionally avoids leaflet while we stabilize.</div>
+      </div>
+    </div>
+    <div class="card" style="padding:14px; overflow:hidden;">
+      <div class="mapCanvas" id="mapCanvas">
+  <div id="leafletMap"></div>
+  <div id="mapGL"></div>
+  <div id="mapStatus"></div>
+<div class="mapAttribution">© maptiler © openstreetmap contributors</div>
+<div class="mapGridOverlay"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="screenPlay">
+  <div id="playWrap">
+    <div class="card" id="playLeft">
+      <div class="cardHeader"><h3>community needs</h3><span class="badge" id="missionNameBadge">mission</span></div>
+      <div class="needsWrap" id="needsChips"></div>
+      <div class="miniMapBox">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div class="badge">city map</div><div class="badge" id="pinStatusBadge">today</div>
+        </div>
+        <div class="miniMap" id="miniMap"></div>
+      
+        <div class="leftActions">
+          <button class="btn" id="btnShuffle">shuffle</button>
+          <button class="btn" id="btnQuit">back to map</button>
+        </div>
+</div>
+    </div>
+
+    <div class="card" id="playRight">
+      <div class="hudRow">
+        <div style="display:flex; gap:14px; flex-wrap:wrap;">
+          <div class="hudStat"><div class="k">people served</div><div class="v" id="peopleServed">0</div></div>
+          <div class="hudStat"><div class="k">moves left</div><div class="v" id="movesLeft">0</div></div>
+          <div class="hudStat"><div class="k">time left</div><div class="v" id="timeLeft">0:00</div></div>
+        </div>
+      </div>
+      <div class="boardBox">
+<div class="board" id="board"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="overlay" id="overlay"></div>
+<div class="modal" id="missionModal">
+  <div class="modalHeader">
+    <div>
+      <h2>there are <span id="missionPeople">0</span> people that need your help</h2>
+      <p>match the right kits before you run out of moves/time.</p>
+    </div>
+    </div>
+  <div class="modalBody">
+    <div class="sep"></div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;" id="missionNeedsPreview"></div>
+    <div class="sep"></div>
+    <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center; width:100%;">
+      <div class="badge">moves: <span id="missionMoves">0</span></div>
+      <div class="badge">time: <span id="missionTime">0:00</span></div>
+    </div>
+  </div>
+  <div class="modalFooter">
+    <button class="btn secondary btnMissionNotNow" id="btnMissionNotNow">not now</button>
+    <button class="btn primary btnPrimary btnMissionStart" id="btnMissionStart">start <i class="fa-duotone fa-solid fa-circle-play fa-bounce"></i></button>
+  </div>
+</div>
+
+
+<div class="modal" id="failModal">
+  <div class="modalHeader">
+    <div><h2>mission failed</h2><p><span id="failReason">out of time</span>. you served <span id="failPeople">0</span> people.</p></div>
+  </div>
+  <div class="modalBody">
+    <div class="sep"></div>
+    <div id="failNeeds" class="recapNeeds" style="margin:10px 0 2px 0;"></div>
+    <div class="small" id="failSummary">tomorrow is another run.</div>
+  </div>
+  <div class="modalFooter" style="justify-content:center; gap:10px; flex-wrap:wrap;">
+    <button class="btn" id="btnFailRetry">try again</button>
+    <button class="btn primary" id="btnFailBack">back to map</button>
+  </div>
+</div>
+
+<div class="modal" id="winModal">
+  <div class="modalHeader">
+    <div><h2>mission complete</h2><p>you served <span id="winPeople">0</span> people.</p></div>
+</div>
+  <div class="modalBody"><div class="sep"></div><div id="winNeeds" class="recapNeeds" style="margin:10px 0 2px 0;"></div><div class="small" id="winSummary">nice.</div></div>
+  <div class="modalFooter"><button class="btn primary" id="btnBackToMap">back to map</button></div>
+</div>
+
+<script>
+  (() => {
+  // global control surface (for inline handlers + debugging)
+  window.__CR = window.__CR || {};
+  "use strict";
+  const BUILD = "care rush v2.5.01";
+
+
+  // title → map entrypoint (used by inline onclick)
+  window.__CR.startTitle = function(){
+    if (!__crGate("startTitle", 750)) return;
+
+    try{ if (window.AudioManager && AudioManager.unlock) AudioManager.unlock(); }catch(_){ }
+    try{ if (window.AudioManager && AudioManager.playSfx) AudioManager.playSfx("click"); }catch(_){ }
+    try{ showScreen("map"); }catch(_){ }
+    try{ renderMap(); }catch(e){ console.warn("[CareRush] renderMap failed", e); }
+  };
+
+  // --- maptiler (dataviz dark) + leaflet ---
+  const MAPTILER_KEY = "Z92Xdiz6ByB7I3J3xtji";
+  const MAPTILER_MAP_ID = "019c3b4e-8494-7154-97d3-a5dbabe7f123";
+
+
+// --- maptiler style.json via maplibre (exact styling) ---
+let __glMap = null;
+let __glMarkers = [];
+
+
+
+// v2.5.01: miniMap MapLibre instance (play screen)
+let __miniGlMap = null;
+let __miniGlMarkers = [];
+
+function clearMiniGLMarkers(){
+  for (const m of __miniGlMarkers){ try{ m.remove(); }catch(_){ } }
+  __miniGlMarkers = [];
+}
+
+function addMiniGLMarker(m, activeId){
+  if (!__miniGlMap) return;
+
+  const isDone = !!(m.done || (STATE.completedToday && STATE.completedToday.has(m.id)));
+  const isActive = !!(activeId && m.id === activeId);
+
+  const iconHtml = isDone
+    ? `<i class="fa-duotone fa-solid fa-location-check fa-xl" style="--fa-primary-color: #c1ff72; --fa-secondary-color: #c1ff72;"></i>`
+    : `<i class="fa-duotone fa-solid fa-location-exclamation fa-xl fa-fade" style="--fa-primary-color: #bf2b2b; --fa-secondary-color: #bf2b2b;"></i>`;
+
+  const el = document.createElement("div");
+  el.className = "miniGLPin" + (isActive ? " active" : "");
+  el.innerHTML = `<div class="crPinWrap">${iconHtml}</div>`;
+
+  const marker = new maplibregl.Marker({ element: el, anchor: "bottom", offset: [0, -20] })
+    .setLngLat([m.lng, m.lat])
+    .addTo(__miniGlMap);
+
+  __miniGlMarkers.push(marker);
+}
+
+
+async function ensureMiniGLMap(centerLngLat){
+  const host = document.getElementById("miniMap");
+  if (!host) return null;
+  if (typeof maplibregl === "undefined") return null;
+
+  // ensure an inner container to avoid wiping MapLibre's own DOM
+  let inner = document.getElementById("miniMapGL");
+  if (!inner){
+    host.innerHTML = "";
+    inner = document.createElement("div");
+    inner.id = "miniMapGL";
+    inner.style.position = "absolute";
+    inner.style.inset = "0";
+    host.appendChild(inner);
+  }
+
+  const styleUrl = `https://api.maptiler.com/maps/${MAPTILER_MAP_ID}/style.json?key=${MAPTILER_KEY}`;
+
+  if (__miniGlMap){
+    try{
+      if (centerLngLat) __miniGlMap.jumpTo({ center: centerLngLat, zoom: 9 });
+      setTimeout(() => { try{ __miniGlMap.resize(); }catch(_){} }, 60);
+    }catch(_){}
+    return __miniGlMap;
+  }
+
+  // Probe style.json (quiet) to avoid spam if key is restricted
+  try{
+    const resp = await fetch(styleUrl, { method:"GET", mode:"cors", cache:"no-store", credentials:"omit" });
+    if (!resp.ok){
+      console.warn(`[CareRush] minimap style.json probe failed (${resp.status}). using schematic minimap.`);
+      return null;
+    }
+  }catch(e){
+    console.warn("[CareRush] minimap style probe error; using schematic minimap.", e);
+    return null;
+  }
+
+  __miniGlMap = new maplibregl.Map({
+    container: inner,
+    style: styleUrl,
+    center: centerLngLat || [-86.1581, 39.7684],
+    zoom: 9,
+    attributionControl: false,
+    interactive: false
+  });
+
+  // extra safety: disable interactions explicitly
+  try{
+    __miniGlMap.scrollZoom && __miniGlMap.scrollZoom.disable();
+    __miniGlMap.boxZoom && __miniGlMap.boxZoom.disable();
+    __miniGlMap.dragRotate && __miniGlMap.dragRotate.disable();
+    __miniGlMap.dragPan && __miniGlMap.dragPan.disable();
+    __miniGlMap.keyboard && __miniGlMap.keyboard.disable();
+    __miniGlMap.doubleClickZoom && __miniGlMap.doubleClickZoom.disable();
+    __miniGlMap.touchZoomRotate && __miniGlMap.touchZoomRotate.disable();
+  }catch(_){}
+
+  __miniGlMap.on("load", () => { try{ __miniGlMap.resize(); }catch(_){} });
+
+  return __miniGlMap;
+}
+async function ensureGLMap(){
+  const glEl = document.getElementById("mapGL");
+  const leafEl = document.getElementById("leafletMap");
+  if (!glEl) return null;
+  if (typeof maplibregl === "undefined") return null;
+  if (__glMap){
+    try{ __glMap.resize(); }catch(_){}
+    return __glMap;
+  }
+
+  const styleUrl = `https://api.maptiler.com/maps/${MAPTILER_MAP_ID}/style.json?key=${MAPTILER_KEY}`;
+
+  // Probe style.json once to avoid tile spam on 403.
+  try{
+    const resp = await fetch(styleUrl, { method:"GET", mode:"cors", cache:"no-store", credentials:"omit" });
+    if (!resp.ok){
+      console.warn(`[CareRush] maptiler style.json probe failed (${resp.status}). falling back to raster.`);
+      try{ const ms=document.getElementById('mapStatus'); if(ms){ ms.style.display='block'; ms.textContent='map style locked (403) — using fallback'; } }catch(_){}
+      return null;
+    }
+  }catch(e){
+    console.warn("[CareRush] maptiler style probe error; falling back.", e);
+    return null;
+  }
+
+  // Show GL, hide Leaflet
+  try{ if (leafEl) leafEl.style.display="none"; }catch(_){}
+  try{ glEl.style.display="block"; }catch(_){}
+  try{ const ms=document.getElementById('mapStatus'); if(ms){ ms.style.display='none'; } }catch(_){}
+
+  __glMap = new maplibregl.Map({
+    container: glEl,
+    style: styleUrl,
+    center: [-86.1581, 39.7684],
+    zoom: 12,
+    attributionControl: true
+  });
+  __glMap.addControl(new maplibregl.NavigationControl({ showCompass:false }), "top-left");
+  __glMap.on("load", () => { try{ __glMap.resize(); }catch(_){} });
+
+  return __glMap;
+}
+
+function clearGLMarkers(){
+  for (const m of __glMarkers){ try{ m.remove(); }catch(_){ } }
+  __glMarkers = [];
+}
+
+function addGLMarker(m){
+  if (!__glMap) return;
+  const isDone = !!m.done;
+  const iconHtml = isDone
+    ? `<i class="fa-duotone fa-solid fa-location-check fa-4xl" style="--fa-primary-color: #c1ff72; --fa-secondary-color: #c1ff72;"></i>`
+    : `<i class="fa-duotone fa-solid fa-location-exclamation fa-4xl fa-fade" style="--fa-primary-color: #bf2b2b; --fa-secondary-color: #bf2b2b;"></i>`;
+
+  const el = document.createElement("div");
+  el.className = "crGLPin";
+  el.innerHTML = `<div class="crPinWrap">${iconHtml}</div>`;
+  el.addEventListener("click", () => {
+    const mission = (STATE && STATE.missions) ? STATE.missions.find(x => x.id === m.id) : null;
+    if (!mission) return;
+    if (STATE.completedToday && STATE.completedToday.has(m.id)){ try{ toast("done today"); }catch(_){ } return; }
+    openMission(mission);
+  });
+
+  const marker = new maplibregl.Marker({ element: el, anchor: "bottom", offset: [0, -20] })
+    .setLngLat([m.lng, m.lat])
+    .addTo(__glMap);
+
+  __glMarkers.push(marker);
+}
+let __leafletMap = null;
+  let __leafletMarkers = [];
+
+  function ensureLeafletMap(){
+    const el = document.getElementById("leafletMap");
+    if (!el) return null;
+    if (typeof L === "undefined"){
+      console.warn("[CareRush] Leaflet not loaded.");
+      return null;
+    }
+    if (__leafletMap){
+      try{ __leafletMap.invalidateSize(); }catch(_){ }
+      return __leafletMap;
+    }
+    __leafletMap = L.map(el, {
+      zoomControl: false,
+      attributionControl: true,
+      scrollWheelZoom: true,
+      dragging: true,
+      doubleClickZoom: true,
+      boxZoom: false,
+      keyboard: false,
+      tap: true
+    });
+
+    const url = `https://api.maptiler.com/maps/${MAPTILER_MAP_ID}/256/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`;
+
+// Start with a reliable dark basemap to avoid blank screens and 403 spam.
+const fallbackUrl = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+let baseLayer = L.tileLayer(fallbackUrl, { maxZoom: 20, attribution: "© carto © openstreetmap contributors" }).addTo(__leafletMap);
+
+// Try MapTiler once, then either swap in or keep fallback.
+// This avoids spamming the console with hundreds of 403s when the key is domain/referrer-restricted.
+(async () => {
+  try{
+    const probe = `https://api.maptiler.com/maps/${MAPTILER_MAP_ID}/256/0/0/0.png?key=${MAPTILER_KEY}`;
+    const resp = await fetch(probe, { method: "GET", mode: "cors", cache: "no-store", credentials: "omit" });
+    if (!resp.ok){
+      console.warn(`[CareRush] maptiler tile probe failed (${resp.status}). keeping fallback tiles.`);
+      return;
+    }
+    try{ __leafletMap.removeLayer(baseLayer); }catch(_){}
+    baseLayer = L.tileLayer(url, { tileSize: 256, maxZoom: 20, crossOrigin: true, attribution: "© maptiler © openstreetmap contributors" }).addTo(__leafletMap);
+
+    let errs = 0;
+    baseLayer.on("tileerror", () => {
+      errs++;
+      if (errs >= 6){
+        console.warn("[CareRush] maptiler tiles erroring. falling back to carto dark.");
+        try{ __leafletMap.removeLayer(baseLayer); }catch(_){}
+        L.tileLayer(fallbackUrl, { maxZoom: 20, attribution: "© carto © openstreetmap contributors" }).addTo(__leafletMap);
+      }
+    });
+  }catch(e){
+    console.warn("[CareRush] maptiler init failed; keeping fallback tiles.", e);
+  }
+})();
+__leafletMap.setView([39.7684, -86.1581], 12);
+    __leafletMap.createPane("pins");
+    __leafletMap.getPane("pins").style.zIndex = 650;
+    return __leafletMap;
+  }
+
+  function clearLeafletMarkers(){
+    if (!__leafletMap) return;
+    for (const m of __leafletMarkers){ try{ __leafletMap.removeLayer(m); }catch(_){ } }
+    __leafletMarkers = [];
+  }
+
+  function addMissionMarker(m){
+    if (!__leafletMap) return;
+    const isDone = !!m.done;
+    const iconHtml = isDone
+      ? `<i class="fa-duotone fa-solid fa-location-check fa-4xl" style="--fa-primary-color: #c1ff72; --fa-secondary-color: #c1ff72;"></i>`
+      : `<i class="fa-duotone fa-solid fa-location-exclamation fa-4xl fa-fade" style="--fa-primary-color: #bf2b2b; --fa-secondary-color: #bf2b2b;"></i>`;
+    const icon = L.divIcon({
+      className: "crPin",
+      html: `<div class="crPinWrap" style="transform: translate(-50%,-100%); pointer-events:auto;">${iconHtml}</div>`,
+      iconSize: [96,96],
+      iconAnchor: [48,96]
+    });
+    const marker = L.marker([m.lat, m.lng], { icon, pane:"pins" });
+    marker.on("click", () => {
+      const mission = (STATE && STATE.missions) ? STATE.missions.find(x => x.id === m.id) : null;
+      if (!mission) return;
+      if (STATE.completedToday && STATE.completedToday.has(m.id)){ try{ toast("done today"); }catch(_){ } return; }
+      openMission(mission);
+    });
+    marker.addTo(__leafletMap);
+    __leafletMarkers.push(marker);
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  const COLORS = { food:css("--food"), support:css("--support"), hygiene:css("--hygiene"), firstaid:css("--firstaid"), clothing:css("--clothing") };
+  const ICON = { hygiene:"fa-soap", food:"fa-utensils", clothing:"fa-shirt", firstaid:"fa-briefcase-medical", support:"fa-headset", donation:"fa-hand-holding-dollar" };
+  const TILE_TYPES = ["hygiene","food","clothing","firstaid","support"];
+  const CITY = { name:"Indiana", lat:39.90, lng:-86.25, zoom:7 };
+
+
+  // --- Audio (stable, autoplay-safe) ---
+  const AUDIO_BASE = "https://reversebus.com/carerush/audio/";
+  const AUDIO = {
+    bgm: AUDIO_BASE + "rb%20bgm.mp3",
+    click: AUDIO_BASE + "button-click.mp3",
+    select: AUDIO_BASE + "tile-select.mp3",
+    match: AUDIO_BASE + "match%20tile%20sound.mp3",
+    win: AUDIO_BASE + "level%20complete.mp3",
+    start: AUDIO_BASE + "game%20start%20sound.mp3",
+    fail: AUDIO_BASE + "level%20fail.mp3"
+  };
+
+  const AudioManager = (() => {
+    let unlocked = false;
+    let bgmOn = true;
+    let sfxOn = true;
+    let bgmEl = null;
+    const sfxPool = new Map();
+
+    function ensure(){
+      if (!bgmEl){
+        bgmEl = new Audio(AUDIO.bgm);
+        bgmEl.loop = true;
+        bgmEl.preload = "auto";
+        bgmEl.volume = 0.30;
+      }
+      return bgmEl;
+    }
+
+    async function unlock(){
+      if (unlocked) return true;
+      try{
+        // Prime an audio element in response to a user gesture
+        ensure();
+        bgmEl.muted = true;
+        await bgmEl.play();
+        bgmEl.pause();
+        bgmEl.currentTime = 0;
+        bgmEl.muted = false;
+        unlocked = true;
+        syncUi();
+        return true;
+      }catch(_){
+        // Some browsers still block; we'll try again on next gesture.
+        syncUi();
+        return false;
+      }
+    }
+
+    function syncUi(){
+      const b = $("btnBgm"), s = $("btnSfx");
+      if (b){
+        b.classList.toggle("on", bgmOn);
+        b.classList.toggle("off", !bgmOn);
+      }
+      if (s){
+        s.classList.toggle("on", sfxOn);
+        s.classList.toggle("off", !sfxOn);
+      }
+    }
+
+    function setBgm(on){
+      bgmOn = !!on;
+      if (!bgmOn) stopBgm();
+      else if (unlocked) playBgm();
+      syncUi();
+    }
+
+    function setSfx(on){
+      sfxOn = !!on;
+      syncUi();
+    }
+
+    function toggleBgm(){ setBgm(!bgmOn); }
+    function toggleSfx(){ setSfx(!sfxOn); }
+
+    async function playBgm(){
+      if (!bgmOn) return;
+      ensure();
+      try{ await bgmEl.play(); }catch(_){}
+    }
+
+    function stopBgm(){
+      if (!bgmEl) return;
+      try{ bgmEl.pause(); }catch(_){}
+    }
+
+    function playSfx(name){
+      if (!sfxOn) return;
+      const url = AUDIO[name];
+      if (!url) return;
+      try{
+        let a = sfxPool.get(name);
+        if (!a){
+          a = new Audio(url);
+          a.preload = "auto";
+          a.volume = (name==="match") ? 0.55 : 0.65;
+          sfxPool.set(name, a);
+        }
+        a.currentTime = 0;
+        a.play().catch(()=>{});
+      }catch(_){}
+    }
+
+    return { unlock, syncUi, toggleBgm, toggleSfx, playBgm, stopBgm, playSfx, get unlocked(){ return unlocked; } };
+  })()
+
+
+  // --- persistence (campaign) ---
+  const LS_KEY = "care_rush_campaign_v2";
+  function todayKey(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const da = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${da}`; // local date
+  }
+  
+  // daily "today you served" counter (local, resets each day)
+  function getTodayServed(){
+    try{
+      const raw = localStorage.getItem("carerush_today_served");
+      if (!raw) return 0;
+      const obj = JSON.parse(raw);
+      if (!obj || obj.day !== todayKey()) return 0;
+      return Number(obj.total || 0) || 0;
+    }catch(_){ return 0; }
+  }
+  function setTodayServed(total){
+    try{
+      localStorage.setItem("carerush_today_served", JSON.stringify({ day: todayKey(), total: Number(total||0) || 0 }));
+    }catch(_){}
+  }
+  function addTodayServed(delta){
+    const cur = getTodayServed();
+    const next = cur + (Number(delta||0) || 0);
+    setTodayServed(next);
+    return next;
+  }
+  function updateTodayServedUI(){
+    const n = getTodayServed();
+    const el = document.getElementById("todayServedNum");
+    if (el) el.textContent = String(n);
+  }
+
+function loadCampaign(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return { day: todayKey(), completed:{}, best:{}, stars:{} };
+      const obj = JSON.parse(raw);
+      // daily reset if day changed
+      if (!obj.day || obj.day !== todayKey()){
+        return { day: todayKey(), completed:{}, best: obj.best||{}, stars: obj.stars||{} };
+      }
+      obj.completed = obj.completed || {};
+      obj.best = obj.best || {};
+      obj.stars = obj.stars || {};
+      return obj;
+    }catch(_){
+      return { day: todayKey(), completed:{}, best:{}, stars:{} };
+    }
+  }
+  function saveCampaign(){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(STATE.campaign)); }catch(_){}
+  }
+  function missionId(m){ return m && (m.id || `${m.lat.toFixed(4)},${m.lng.toFixed(4)}`); }
+
+;
+
+  // One-time global gesture to unlock audio
+  window.addEventListener("pointerdown", () => { AudioManager.unlock().then(() => { if (STATE.screen !== "title") AudioManager.playBgm(); }); }, { once:false, passive:true });
+
+
+  const STATE = {
+    uidCounter: 1, screen:"title", peopleServedTotal:0, missions:[], selectedMission:null, completedToday:new Set(), N:8, grid:[], selected:null, movesLeft:0, timeLeft:0, timer:null, needsRemaining:null, peopleServedMission:0 ,
+    busy:false,
+    donationEvery:6,
+    movesSinceDonation:0,
+    donationPos:null,
+    selectedPinId:null,
+    _id:0
+  };
+
+  // debounce gate + mission intro animation
+  const __CR_GATES = window.__CR_GATES || (window.__CR_GATES = {});
+  function __crGate(key, ms){
+    const now = Date.now();
+    const last = Number(__CR_GATES[key] || 0);
+    if (now - last < (ms || 500)) return false;
+    __CR_GATES[key] = now;
+    return true;
+  }
+  function applyPlayIntro(){
+    const sp = document.getElementById("screenPlay");
+    if (!sp) return;
+    sp.classList.remove("playIntroAnim");
+    // force reflow so animation restarts reliably
+    void sp.offsetWidth;
+    sp.classList.add("playIntroAnim");
+    sp.addEventListener("animationend", () => sp.classList.remove("playIntroAnim"), { once: true });
+  }
+
+  // count-up animation for recap numbers
+  function crParseIntFromText(t){
+    if (t == null) return 0;
+    const m = String(t).replace(/[^0-9]/g,"");
+    return m ? Number(m) : 0;
+  }
+  function crCountUp(el, to, ms){
+    if (!el) return;
+    const from = crParseIntFromText(el.textContent);
+    const dur = Math.max(240, Math.min(900, Number(ms||520)));
+    const start = performance.now();
+    el.classList.add("counting");
+    function easeOutCubic(x){ return 1 - Math.pow(1-x, 3); }
+    function tick(now){
+      const p = Math.min(1, (now - start) / dur);
+      const v = Math.round(from + (to - from) * easeOutCubic(p));
+      el.textContent = String(v);
+      if (p < 1) requestAnimationFrame(tick);
+      else setTimeout(()=>el.classList.remove("counting"), 60);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // cr-punch-cleanup
+  function __crPunchCleanup(el){
+    if (!el) return;
+    setTimeout(()=>{ try{ el.classList.remove("cr-punch"); }catch(_){ } }, 360);
+  }
+
+  function captureBoardPositions(){
+    const out = new Map();
+    try{
+      document.querySelectorAll("#board .tile[data-uid]").forEach(el=>{
+        const uid = el.dataset.uid;
+        const r = el.getBoundingClientRect();
+        out.set(uid, {x:r.left, y:r.top});
+      });
+    }catch(_){}
+    return out;
+  }
+
+  function animateBoardTransitions(prev){
+    if (!prev || prev.size===0) return;
+    // FLIP: First (prev) -> Last (current), then invert and play
+    requestAnimationFrame(()=>{
+      try{
+        document.querySelectorAll("#board .tile[data-uid]").forEach(el=>{
+          const uid = el.dataset.uid;
+          const p = prev.get(uid);
+          if (!p) return;
+          const r = el.getBoundingClientRect();
+          const dx = p.x - r.left;
+          const dy = p.y - r.top;
+          if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
+          el.classList.remove("cr-spawn"); // ensure spawn doesn't fight FLIP
+          el.classList.add("cr-flip");
+          el.style.transform = `translate(${dx}px, ${dy}px)`;
+          // force reflow
+          void el.offsetWidth;
+          el.style.transform = "translate(0px, 0px)";
+          setTimeout(()=>{ try{ el.classList.remove("cr-flip"); el.style.transform=""; }catch(_){ } }, 280);
+        });
+      }catch(_){}
+    });
+  }
+
+
+
+
+  function crAnimateTodayTotal(id){
+    const el = document.getElementById(id);
+    if (!el) return;
+    // expects: today you served <span class="n">X</span> people
+    const span = el.querySelector(".n") || el.querySelector("span");
+    if (!span) return;
+    const to = crParseIntFromText(span.textContent);
+    span.textContent = "0";
+    crCountUp(span, to, 560);
+  }
+  function crAnimateRecapPeople(){
+    // try a few common ids/classes in our file
+    const candidates = [
+      "#recapPeople .n", "#recapPeopleServed .n", "#peopleServedRecap .n",
+      "#winPeople .n", "#failPeople .n",
+      "#recapPeople", "#recapServed", "#peopleServed",
+      ".recapPeople .n", ".recapPeople", ".peopleServedBig", ".servedBig", ".servedNum", ".recapNum"
+    ];
+    for (const sel of candidates){
+      const el = document.querySelector(sel);
+      if (!el) continue;
+      const to = crParseIntFromText(el.textContent);
+      if (!to) continue;
+      el.textContent = "0";
+      crCountUp(el, to, 640);
+      break;
+    }
+  }
+
+
+
+
+
+  function crTodayKey(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  }
+  function getTodayServed(){
+    try{
+      const raw = localStorage.getItem("carerush_today_served");
+      if (!raw) return 0;
+      const obj = JSON.parse(raw);
+      return Number(obj[crTodayKey()] || 0);
+    }catch(_){ return 0; }
+  }
+  function addTodayServed(n){
+    try{
+      const raw = localStorage.getItem("carerush_today_served");
+      const obj = raw ? JSON.parse(raw) : {};
+      const k = crTodayKey();
+      obj[k] = Number(obj[k]||0) + Number(n||0);
+      localStorage.setItem("carerush_today_served", JSON.stringify(obj));
+    }catch(_){}
+  }
+  function renderTodayServedInto(elId){
+    try{
+      const el = document.getElementById(elId);
+      if (!el) return;
+      const n = getTodayServed();
+      el.innerHTML = `today you served <span class="n">${n}</span> people`;
+    }catch(_){}
+  }
+
+
+
+  $("buildBadge").textContent = BUILD.replace("care rush ","");
+  $("cityBadge").textContent = CITY.name;
+
+  $("btnHome").addEventListener("click", () => { AudioManager.playSfx("click"); showScreen("title"); });
+  $("btnBgm").addEventListener("click", () => { AudioManager.unlock(); AudioManager.toggleBgm(); AudioManager.playSfx("click"); });
+  $("btnSfx").addEventListener("click", () => { AudioManager.unlock(); AudioManager.toggleSfx(); AudioManager.playSfx("click"); });
+  const __btnCareToPlay = $("btnCareToPlay");
+  if (__btnCareToPlay) __btnCareToPlay.addEventListener("click", () => { AudioManager.unlock(); AudioManager.playSfx("click"); showScreen("map"); try{ renderMap(); }catch(e){ console.error("[CareRush] renderMap failed", e); } });
+  $("btnDaily").addEventListener("click", () => { AudioManager.playSfx("click");  showScreen("map"); if (STATE.missions[0]) openMission(STATE.missions[0]); });
+  $("btnQuit").addEventListener("click", () => { AudioManager.playSfx("click");  stopTimer(); showScreen("map"); renderMap(); });
+  $("btnShuffle").addEventListener("click", () => { AudioManager.playSfx("click");  if (!STATE.grid.length) return; shuffleBoard(); renderBoard(); });
+
+  const __btnCloseMission = document.getElementById("btnCloseMission");
+  if (__btnCloseMission) __btnCloseMission.addEventListener("click", () => { AudioManager.playSfx("click"); closeMissionModal(); });
+
+  $("btnMissionNotNow").addEventListener("click", () => { AudioManager.playSfx("click"); closeMissionModal(); showScreen("map"); renderMap(); });
+  $("overlay").addEventListener("click", () => { closeMissionModal(); closeWinModal(); });
+  $("btnMissionStart").addEventListener("click", () => { AudioManager.playSfx("click");  closeMissionModal(); startMission(STATE.selectedMission); });
+  const __btnWinToMap = document.getElementById("btnWinToMap");
+  if (__btnWinToMap) __btnWinToMap.addEventListener("click", () => { AudioManager.playSfx("click"); closeWinModal(); showScreen("map"); try{ renderMap(); }catch(_){ } });
+  $("btnBackToMap").addEventListener("click", () => { AudioManager.playSfx("click"); closeWinModal(); showScreen("map"); try{ renderMap(); }catch(_){ } });
+
+  // fail modal buttons
+  try{
+    $("btnFailRetry").addEventListener("click", () => {
+      AudioManager.playSfx("click");
+      closeFail();
+      const mid = STATE.selectedPinId || (STATE.selectedMission && STATE.selectedMission.id);
+      const m = (STATE.selectedMission) ? STATE.selectedMission :
+                (mid && Array.isArray(STATE.missions) ? STATE.missions.find(x=>x && x.id===mid) : null);
+      if (m) startMission(m);
+    });
+    $("btnFailBack").addEventListener("click", () => {
+      AudioManager.playSfx("click");
+      closeFail();
+      showScreen("map");
+      try{ renderMap(); }catch(_){}
+    });
+  }catch(_){}
+
+
+
+  STATE.missions = buildDailyMissions();
+  $("missionCountBadge").textContent = `${STATE.missions.length} pins`;
+  // render pins immediately if map is visible
+  try{ renderMap(); }catch(_){ }
+
+  AudioManager.syncUi();
+  showScreen("title");
+  renderMap();
+
+  function showScreen(which){
+    STATE.screen = which;
+    $("screenTitle").classList.toggle("active", which==="title");
+    $("screenMap").classList.toggle("active", which==="map");
+    $("screenPlay").classList.toggle("active", which==="play");
+    closeMissionModal(); closeWinModal();
+    const tb = document.getElementById("topbar"); if(tb) tb.style.display = (which==="title") ? "none" : "";
+    $("peopleServedTitle").textContent = String(STATE.peopleServedTotal);
+  }
+
+  
+  function buildDonationChoices(){
+    const host = $("donationChoices");
+    host.innerHTML = "";
+    for (const t of TILE_TYPES){
+      const b = document.createElement("button");
+      b.className = "btn";
+      b.style.background = COLORS[t];
+      b.style.borderColor = "rgba(255,255,255,0.18)";
+      b.style.color = "#fff";
+      b.style.display = "inline-flex";
+      b.style.gap = "10px";
+      b.style.alignItems = "center";
+                  b.innerHTML = `<i class="fa-duotone ${ICON[t]} fa-2xl" aria-hidden="true"></i>`;
+      b.addEventListener("click", () => { AudioManager.playSfx("click"); applyDonationBoost(t); });
+      host.appendChild(b);
+    }
+  }
+
+  function openDonationPicker(r,c){
+    STATE.donationPos = {r,c};
+    buildDonationChoices();
+    $("overlay").style.display = "block";
+    $("donationModal").style.display = "block";
+  }
+
+  function closeDonationPicker(){
+    $("donationModal").style.display = "none";
+    if ($("missionModal").style.display !== "block" && $("winModal").style.display !== "block") $("overlay").style.display = "none";
+    STATE.donationPos = null;
+  }
+
+  function applyDonationBoost(targetType){
+    if (!STATE.donationPos) return;
+    STATE.busy = true;
+    // Clear all tiles of target type + the donation tile itself
+    let cleared = 0;
+    for (let r=0; r<STATE.N; r++){
+      for (let c=0; c<STATE.N; c++){
+        const cell = STATE.grid[r][c];
+        if (!cell) continue;
+        if (cell.t === targetType){
+          STATE.grid[r][c] = null;
+          cleared += 1;
+        }
+      }
+    }
+    const dp = STATE.donationPos;
+    if (STATE.grid[dp.r][dp.c] && STATE.grid[dp.r][dp.c].t === "donation"){
+      STATE.grid[dp.r][dp.c] = null;
+    }
+    // Update metrics + needs
+    STATE.peopleServedMission += cleared;
+    STATE.peopleServedTotal += cleared;
+    const byType = {};
+    byType[targetType] = cleared;
+    applyNeedsFromClears(byType);
+
+    // Collapse, refill, and resolve any incidental matches
+    dropDown();
+    refill();
+    closeDonationPicker();
+
+    const m = findMatches();
+    if (m.length) resolveMatches(m);
+    else { STATE.busy = false; renderNeeds(); renderHUD(); renderBoard(); if (checkWin()) finishMission(); }
+  }
+
+  function maybeSpawnDonation(){
+    // Spawn every N moves (when not already present)
+    // Increase counter when a move successfully created matches (we decrement movesLeft in onTileClick)
+    if (STATE.movesLeft < 0) return;
+    // Detect if donation already on board
+    for (let r=0; r<STATE.N; r++){
+      for (let c=0; c<STATE.N; c++){
+        const cell = STATE.grid[r][c];
+        if (cell && cell.t === "donation") return;
+      }
+    }
+    // Only spawn after player moves (not at mission start)
+    if (STATE.peopleServedMission === 0 && STATE.movesLeft === (STATE.activeMission?.moves||STATE.movesLeft)) return;
+
+    STATE.movesSinceDonation = (STATE.movesSinceDonation || 0) + 1;
+    if (STATE.movesSinceDonation < STATE.donationEvery) return;
+    STATE.movesSinceDonation = 0;
+
+    // Replace a random cell with donation
+    const r = Math.floor(Math.random()*STATE.N);
+    const c = Math.floor(Math.random()*STATE.N);
+    STATE.grid[r][c] = newCell("donation");
+  }
+
+
+function renderMap(){
+  try{ updateTodayServedUI(); }catch(_){ }
+
+(async () => {
+  // Prefer MapLibre GL for exact MapTiler styling.
+  const gl = await ensureGLMap();
+  if (gl) {
+    setTimeout(() => { try{ gl.resize(); }catch(_){} }, 80);
+    clearGLMarkers();
+    const missions = (STATE && (STATE.missions || (STATE.city && STATE.city.missions) || (STATE.daily && STATE.daily.missions))) || [];
+    for (const mm of missions) {
+      const mObj = {
+        id: mm.id ?? mm.mid ?? mm.key ?? String(mm),
+        lat: mm.lat ?? mm.latitude,
+        lng: mm.lng ?? mm.longitude,
+        done: mm.done ?? mm.complete ?? mm.completed ?? false
+      };
+      if (typeof mObj.lat === "number" && typeof mObj.lng === "number") addGLMarker(mObj);
+    }
+          // auto-fit camera so all pins are visible
+          try{
+            const pts = missions
+              .map(mm => ({lat: mm.lat ?? mm.latitude, lng: mm.lng ?? mm.longitude}))
+              .filter(p => typeof p.lat === "number" && typeof p.lng === "number");
+            if (pts.length){
+              let minLng=pts[0].lng, minLat=pts[0].lat, maxLng=pts[0].lng, maxLat=pts[0].lat;
+              for (const p of pts){
+                if (p.lng < minLng) minLng = p.lng;
+                if (p.lat < minLat) minLat = p.lat;
+                if (p.lng > maxLng) maxLng = p.lng;
+                if (p.lat > maxLat) maxLat = p.lat;
+              }
+              gl.fitBounds([[minLng, minLat],[maxLng, maxLat]], { padding: 48, duration: 650, maxZoom: 7.5 });
+            }
+          }catch(_){}
+
+    return;
+  }
+
+  // Fallback to Leaflet raster if GL style is blocked.
+  const leaf = document.getElementById("leafletMap");
+  const glEl = document.getElementById("mapGL");
+  try{ if (glEl) glEl.style.display = 'none'; }catch(_){}
+  try{ if (leaf) leaf.style.display = 'block'; }catch(_){}
+
+  const map = ensureLeafletMap();
+  if (map) {
+    setTimeout(() => { try { map.invalidateSize(); } catch(_){} }, 60);
+    clearLeafletMarkers();
+    const missions = (STATE && (STATE.missions || (STATE.city && STATE.city.missions) || (STATE.daily && STATE.daily.missions))) || [];
+    for (const mm of missions) {
+      const mObj = {
+        id: mm.id ?? mm.mid ?? mm.key ?? String(mm),
+        lat: mm.lat ?? mm.latitude ?? mm.y,
+        lng: mm.lng ?? mm.longitude ?? mm.x,
+        done: mm.done ?? mm.complete ?? mm.completed ?? false
+      };
+      if (typeof mObj.lat === "number" && typeof mObj.lng === "number") addMissionMarker(mObj);
+    }
+          // auto-fit view so all pins are visible
+          try{
+            const pts = missions
+              .map(mm => ({lat: mm.lat ?? mm.latitude, lng: mm.lng ?? mm.longitude}))
+              .filter(p => typeof p.lat === "number" && typeof p.lng === "number");
+            if (pts.length){
+              const b = L.latLngBounds(pts.map(p => [p.lat, p.lng]));
+              map.fitBounds(b, { padding: [48,48], maxZoom: 7.5 });
+            }
+          }catch(_){}
+
+  }
+})();
+}
+
+
+  // delegated map pin clicks (fa-safe)
+  $("mapCanvas").addEventListener("click", (e) => {
+    const target = e.target.closest(".pinIcon");
+    if (!target) return;
+
+    const mid = target.dataset.mid;
+    if (!mid) return;
+
+    const done = target.dataset.done === "1";
+    if (done){ try{ toast("done today"); }catch(_){ } return; }
+
+    // selection
+    document.querySelectorAll(".pinIcon.selected").forEach(p => p.classList.remove("selected"));
+    target.classList.add("selected");
+    STATE.selectedPinId = mid;
+
+    const mission = STATE.missions.find(x => x.id === mid);
+    if (!mission) return;
+
+    // info card
+    try{
+      const best = Number(target.dataset.best||0);
+      const stars = Number(target.dataset.stars||0);
+      const card = document.getElementById("pinInfo");
+      if (card){
+        card.style.display = "block";
+        const s = document.getElementById("pinStars");
+        const b = document.getElementById("pinBest");
+        const st = document.getElementById("pinStatus");
+        if (b) b.textContent = String(best);
+        if (s) s.textContent = stars ? "★".repeat(stars) : "";
+        if (st) st.textContent = "available today";
+      }
+    }catch(_){}
+
+    openMission(mission);
+  });
+
+
+
+  function openMission(m){
+    STATE.selectedMission = m;
+    $("missionPeople").textContent = String(m.people);
+    $("missionMoves").textContent = String(m.moves);
+    $("missionTime").textContent = fmtTime(m.time);
+    const preview = $("missionNeedsPreview");
+    preview.innerHTML = "";
+    for (const t of TILE_TYPES){
+      const v = m.needs[t] || 0;
+      if (!v) continue;
+      preview.appendChild(makeNeedChip(t, v));
+    }
+    $("overlay").style.display = "block";
+    $("missionModal").style.display = "block";
+  }
+  function closeMissionModal(){
+    $("missionModal").style.display = "none";
+    if ($("winModal").style.display !== "block") $("overlay").style.display = "none";
+  }
+
+  
+function startMissionFromMap(m){
+  // animate map -> mission start
+  try{
+    if (__glMap && m && typeof m.lng==="number" && typeof m.lat==="number"){
+      crMapTransitionOn();
+      __glMap.flyTo({ center:[m.lng, m.lat], zoom: Math.max(__glMap.getZoom(), 9), speed: 1.2, curve: 1.4, essential:true });
+      // after a short beat, fade and start
+      setTimeout(()=>{
+        crMapTransitionOff();
+        startMission(m);
+      }, 120);
+      return;
+    }
+  }catch(e){}
+  // fallback
+  startMission(m);
+}
+
+function startMission(m){
+    if (!__crGate("startMission", 450)) return;
+    applyPlayIntro();
+
+    STATE.activeMission = m;
+    if (!m) return;
+    AudioManager.playSfx("start");
+    showScreen("play");
+    $("missionNameBadge").textContent = m.name;
+    $("pinStatusBadge").textContent = STATE.completedToday.has(m.id) ? "done" : "today";
+
+    STATE.needsRemaining = clone(m.needs);
+    STATE.needsStart = clone(m.needs); // snapshot for recap
+    STATE.movesLeft = m.moves;
+    STATE.timeLeft = m.time;
+    STATE.peopleServedMission = 0;
+
+    STATE._id = 0;
+    STATE.grid = makeFreshBoardNoMatches(STATE.N);
+    ensureCellIds();
+    STATE.selected = null;
+
+    renderNeeds();
+    renderMiniMap();
+    renderHUD();
+    renderBoard();
+    startTimer();
+  }
+
+  function renderHUD(){
+    $("peopleServed").textContent = String(STATE.peopleServedMission);
+    $("movesLeft").textContent = String(STATE.movesLeft);
+    $("timeLeft").textContent = fmtTime(STATE.timeLeft);
+    $("peopleServedTitle").textContent = String(STATE.peopleServedTotal);
+  }
+
+  function renderNeeds(){
+    const wrap = $("needsChips");
+    wrap.innerHTML = "";
+    const needs = STATE.needsRemaining || {};
+    for (const t of TILE_TYPES){
+      const v = needs[t] || 0;
+      if (!v) continue;
+      wrap.appendChild(makeNeedChip(t, v));
+    }
+    if (!wrap.children.length){
+      const d = document.createElement("div");
+      d.className = "small";
+      d.textContent = "all needs met.";
+      wrap.appendChild(d);
+    }
+  }
+
+  function renderMiniMap(){
+    const host = $("miniMap");
+    if (!host) return;
+
+    const active = STATE.activeMission || STATE.selectedMission || null;
+    const center = active && typeof active.lng==="number" && typeof active.lat==="number" ? [active.lng, active.lat] : [-86.1581, 39.7684];
+
+    // Prefer live minimap with MapLibre (exact same MapTiler style).
+    (async () => {
+      const gl = await ensureMiniGLMap(center);
+      if (gl){
+        try{
+          clearMiniGLMarkers();
+          const activeId = active ? active.id : null;
+          for (const m of (STATE.missions || [])){
+            if (typeof m.lng==="number" && typeof m.lat==="number") addMiniGLMarker(m, activeId);
+          }
+          gl.jumpTo({ center, zoom: 9 });
+          setTimeout(()=>{ try{ gl.resize(); }catch(_){} }, 80);
+        }catch(_){}
+        return;
+      }
+
+      // Fallback: schematic minimap (no external map)
+      host.innerHTML = "";
+      const grid = document.createElement("div");
+      grid.className = "mapGridOverlay";
+      grid.style.opacity = "0.25";
+      host.appendChild(grid);
+
+      for (const m of (STATE.missions || [])){
+        const p = document.createElement("div");
+        p.className = "miniPin";
+        p.style.left = Math.round(m.x*100) + "%";
+        p.style.top  = Math.round(m.y*100) + "%";
+        if (active && m.id === active.id){
+          p.style.background = "white";
+        } else if (STATE.completedToday && STATE.completedToday.has(m.id)) {
+          p.style.background = "rgba(255,255,255,0.18)";
+        }
+        host.appendChild(p);
+      }
+    })();
+  }
+
+
+function animateFlip(prev, duration=240){
+  if (!prev || !prev.size) return;
+  document.querySelectorAll("#board .tile[data-id]").forEach(el => {
+    const id = el.dataset.id;
+    const p = prev.get(id);
+    if (!p) return;
+    const r = el.getBoundingClientRect();
+    const dx = p.left - r.left;
+    const dy = p.top  - r.top;
+    if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
+    try{
+      el.animate(
+        [{ transform:`translate(${dx}px, ${dy}px)` }, { transform:"translate(0,0)" }],
+        { duration, easing:"cubic-bezier(.2,.9,.2,1)" }
+      );
+    }catch(_){}
+  });
+}
+
+function renderBoard(){
+    const board = $("board");
+    board.innerHTML = "";
+    const anim=[];
+    for (let r=0; r<STATE.N; r++){
+      for (let c=0; c<STATE.N; c++){
+        const cell = STATE.grid[r][c];
+        const btn = document.createElement("button");
+        btn.className = "tile";
+        if (cell && cell._spawn){
+          btn.classList.add("cr-spawn");
+          const rows = Math.max(1, Math.min(8, Number(cell._spawnRows || 2)));
+          btn.style.setProperty("--cr-spawn-y", (-rows*160) + "px");
+          btn.style.animationDelay = (rows*10) + "ms";
+          cell._spawn = false;
+          cell._spawnRows = 0;
+        }
+        // animate tiles that fell due to gravity this tick (arcade-snappy)
+        if (cell && !cell._spawn){
+          const fall = Number(cell._fall || 0);
+          if (fall > 0){
+            btn.classList.add("cr-fall");
+            const rows = Math.max(1, Math.min(8, fall));
+            btn.style.setProperty("--cr-fall-y", (-rows*110) + "px");
+            const dur = Math.max(160, Math.min(360, 170 + rows*28));
+            btn.style.setProperty("--cr-fall-dur", dur + "ms");
+            try{ cell._fall = 0; }catch(_){}
+          }
+        }
+
+        const t = cell.t;
+        if (t === "donation") btn.classList.add("donation");
+        btn.dataset.r = String(r);
+        btn.dataset.c = String(c);
+        btn.dataset.id = String(cell.id);
+        const __key = r + "," + c;
+        if (STATE && STATE._popKey === __key) { btn.classList.add("cr-pop"); }
+        btn.style.background = COLORS[t];
+        btn.style.color = "#ffffff";
+        if (t === "donation"){ btn.style.background = "#000000"; btn.style.color = "#ffffff"; }
+        btn.dataset.t = t;
+        const anim = (t === "donation") ? "fa-beat-fade" : "";
+        btn.innerHTML = `<i class="fa-duotone ${ICON[t]} fa-2xl cr-duo ${anim}" aria-hidden="true"></i><div class="fallback">${t.toUpperCase()}</div>`;
+        if (STATE.selected && STATE.selected.r===r && STATE.selected.c===c) btn.classList.add("sel");
+        btn.addEventListener("click", onTileClick);
+        
+// gravity/refill slide: animate tiles that moved or spawned
+let fallRows = 0;
+if (cell){
+  fallRows = Math.max(cell._fall||0, cell._spawnRows||0);
+  // clear markers so we don’t re-animate on next render
+  cell._fall = 0;
+  cell._spawnRows = 0;
+}
+if (fallRows > 0) anim.push([btn, fallRows]);
+        board.appendChild(btn);
+      }
+    }
+
+// run gravity/refill slide animations (FLIP-ish)
+if (anim.length){
+  requestAnimationFrame(()=>{
+    const first = anim[0][0];
+    const tileW = (first && first.getBoundingClientRect) ? first.getBoundingClientRect().width : 72;
+    const gap = parseFloat(getComputedStyle(board).gap) || 10;
+    const step = tileW + gap;
+    anim.forEach(([el, fall])=>{
+      el.style.transition = 'none';
+      el.style.transform = `translateY(${-fall * step}px)`;
+      el.style.opacity = '0.85';
+      el.style.willChange = 'transform';
+    });
+    // force reflow so the browser commits the starting transforms
+    void board.offsetHeight;
+    requestAnimationFrame(()=>{
+      anim.forEach(([el])=>{
+        el.style.transition = 'transform 220ms cubic-bezier(.2,.9,.2,1), opacity 220ms';
+        el.style.transform = 'translateY(0px)';
+        el.style.opacity = '1';
+      });
+    });
+  });
+}
+        try{syncNeedChipSize();}catch(e){}
+}
+
+  function onTileClick(ev){
+  if (STATE.busy) return;
+  if (STATE.movesLeft <= 0) return;
+  const r = Number(ev.currentTarget.dataset.r);
+  const c = Number(ev.currentTarget.dataset.c);
+
+  const tapped = STATE.grid[r][c];
+  if (tapped && tapped.t === "donation"){
+    AudioManager.playSfx("click");
+    openDonationPicker(r,c);
+    return;
+  }
+
+  if (!STATE.selected){
+    AudioManager.playSfx("select");
+    STATE.selected = {r,c};
+    STATE._popKey = r + "," + c;
+    renderBoard();
+    return;
+  }
+
+  const a = STATE.selected;
+  const b = {r,c};
+
+  if (a.r===b.r && a.c===b.c){
+    STATE.selected = null;
+    renderBoard();
+    return;
+  }
+
+  if (!adj(a,b)){
+    AudioManager.playSfx("select");
+    STATE.selected = b;
+    STATE._popKey = b.r + "," + b.c;
+    renderBoard();
+    return;
+  }
+
+  // animate swap first, then commit in state
+  STATE.selected = null;
+  STATE.busy = true;
+
+  const elA = document.querySelector(`#board .tile[data-r="${a.r}"][data-c="${a.c}"]`);
+  const elB = ev.currentTarget;
+
+  const doCommit = () => {
+    swap(a,b);
+
+    const matches = findMatches();
+    if (!matches.length){
+      // swap back + "nope" wiggle
+      swap(a,b);
+      if (elA){ elA.classList.add("cr-pop"); elA.classList.add("cr-wiggle"); setTimeout(()=>elA && elA.classList.remove("cr-wiggle"), 320); }
+      if (elB){ elB.classList.add("cr-pop"); elB.classList.add("cr-wiggle"); setTimeout(()=>elB && elB.classList.remove("cr-wiggle"), 320); }
+      try{
+        if (elA) elA.animate([{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(-4px)"},{transform:"translateX(0)"}],{duration:220,easing:"ease-out"});
+        if (elB) elB.animate([{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(-4px)"},{transform:"translateX(0)"}],{duration:220,easing:"ease-out"});
+      }catch(_){}
+      renderBoard();
+      STATE.busy = false;
+      return;
+    }
+
+    STATE.movesLeft -= 1;
+    renderHUD();
+    renderBoard();
+    resolveMatches(matches);
+    // resolveMatches will clear busy when stable
+  };
+
+  if (!elA || !elB){
+
+
+const runSwapAnim = () => {
+  if (!elA || !elB || !elA.animate || !elB.animate){
+    doCommit();
+    return;
+  }
+  const ra = elA.getBoundingClientRect();
+  const rb = elB.getBoundingClientRect();
+  const dx = (rb.left - ra.left);
+  const dy = (rb.top  - ra.top);
+
+  // bring above neighbors during animation
+  const za = elA.style.zIndex, zb = elB.style.zIndex;
+  elA.style.zIndex = "10";
+  elB.style.zIndex = "10";
+
+  let aAnim, bAnim;
+  try{
+    aAnim = elA.animate(
+      [{ transform:"translate(0,0)" }, { transform:`translate(${dx}px, ${dy}px)` }],
+      { duration: 140, easing:"cubic-bezier(.2,.9,.2,1)", fill:"both" }
+    );
+    bAnim = elB.animate(
+      [{ transform:"translate(0,0)" }, { transform:`translate(${-dx}px, ${-dy}px)` }],
+      { duration: 140, easing:"cubic-bezier(.2,.9,.2,1)", fill:"both" }
+    );
+  }catch(_){
+    elA.style.zIndex = za; elB.style.zIndex = zb;
+    doCommit();
+    return;
+  }
+
+  Promise.all([
+    aAnim.finished.catch(()=>{}),
+    bAnim.finished.catch(()=>{})
+  ]).then(() => {
+    // reset and commit
+    elA.style.zIndex = za;
+    elB.style.zIndex = zb;
+    try{ aAnim.cancel(); bAnim.cancel(); }catch(_){}
+    doCommit();
+  });
+};
+  runSwapAnim();
+    return;
+  }
+
+  const ra = elA.getBoundingClientRect();
+  const rb = elB.getBoundingClientRect();
+  const dx = rb.left - ra.left;
+  const dy = rb.top  - ra.top;
+
+  try{
+    const aAnim = elA.animate(
+      [{ transform: "translate(0,0)" }, { transform: `translate(${dx}px, ${dy}px)` }],
+      { duration: 160, easing: "cubic-bezier(.2,.9,.2,1)" }
+    );
+    const bAnim = elB.animate(
+      [{ transform: "translate(0,0)" }, { transform: `translate(${-dx}px, ${-dy}px)` }],
+      { duration: 160, easing: "cubic-bezier(.2,.9,.2,1)" }
+    );
+    Promise.all([aAnim.finished, bAnim.finished]).then(doCommit).catch(doCommit);
+  }catch(_){
+    doCommit();
+  }
+}
+
+  function resolveMatches(initialMatches){
+  STATE.busy = true;
+  let matches = initialMatches;
+  let chain = 0; // cascade depth for dynamic speed-up
+
+  const timing = () => {
+    // faster each chain; cap so it doesn't become unreadable
+    const factor = Math.max(0.55, 1 - chain*0.13);
+    return {
+      clearHold: Math.round(190 * factor),     // how long to let punch/clear be seen
+      between:   Math.round(90 * factor),      // pause between cascades
+      sfxAt:     Math.round(95 * factor)       // when to fire match sound (near clear moment)
+    };
+  };
+
+  const animateAndClear = (done) => {
+    const t = timing();
+    try{
+      const seen = new Set();
+      for (const group of matches){
+        for (const p of group){
+          const key = p.r + "," + p.c;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const el = document.querySelector(`#board .tile[data-r="${p.r}"][data-c="${p.c}"]`);
+          if (el){
+            el.classList.add("cr-punch");
+            __crPunchCleanup(el);
+            setTimeout(()=>{ try{ el.classList.add("cr-clear"); }catch(_){ } }, 90);
+          }
+        }
+      }
+    }catch(_){}
+    // sync match SFX closer to clear moment
+    setTimeout(()=>{ try{ AudioManager.playSfx("match"); }catch(_){ } }, t.sfxAt);
+    setTimeout(done, t.clearHold);
+  };
+
+  const step = () => {
+    if (!matches.length){
+      maybeSpawnDonation();
+      STATE.busy = false;
+      renderNeeds(); renderHUD(); renderBoard();
+      if (checkWin()){ finishMission(); return; }
+      if (STATE.movesLeft <= 0 || STATE.timeLeft <= 0){
+        STATE.busy = false;
+        failMission(STATE.movesLeft <= 0 ? "out of moves" : "out of time");
+        return;
+      }
+      if (!hasAnyMoves()){ shuffleBoard(); renderBoard(); }
+      return;
+    }
+
+    animateAndClear(() => {
+      const clearedInfo = snapshotTypes(matches);
+      clearMatches(matches);
+
+      const clearedCount = clearedInfo.total;
+      STATE.peopleServedMission += clearedCount;
+      STATE.peopleServedTotal += clearedCount;
+
+      applyNeedsFromClears(clearedInfo.byType);
+
+      const __prevPos = captureBoardPositions();
+      dropDown();
+      refill();
+      matches = findMatches();
+
+      renderNeeds(); renderHUD(); renderBoard();
+      animateBoardTransitions(__prevPos);
+      chain += 1;
+      const t = timing();
+      setTimeout(step, t.between);
+    });
+  };
+
+  step();
+}
+
+function snapshotTypes(matches){
+    const seen = new Set();
+    const byType = { hygiene:0, food:0, clothing:0, firstaid:0, support:0 };
+    let total = 0;
+    for (const group of matches){
+      for (const p of group){
+        const k = p.r + "," + p.c;
+        if (seen.has(k)) continue;
+        seen.add(k);
+        const t = STATE.grid[p.r][p.c].t;
+        byType[t] = (byType[t]||0) + 1;
+        total += 1;
+      }
+    }
+    return { byType, total };
+  }
+
+  function applyNeedsFromClears(byType){
+    if (!STATE.needsRemaining) return;
+    for (const t of TILE_TYPES){
+      const cleared = byType[t] || 0;
+      if (!cleared) continue;
+      const cur = STATE.needsRemaining[t] || 0;
+      STATE.needsRemaining[t] = Math.max(0, cur - cleared);
+    }
+  }
+
+  function clearMatches(matches){
+    const kill = new Set();
+    for (const group of matches){
+      for (const p of group) kill.add(p.r + "," + p.c);
+    }
+    for (const key of kill){
+      const parts = key.split(",");
+      const r = Number(parts[0]), c = Number(parts[1]);
+      STATE.grid[r][c] = null;
+    }
+  }
+
+  function dropDown(){
+    const N = STATE.N;
+    // clear any prior fall markers
+    try{
+      for (let r=0; r<N; r++){
+        for (let c=0; c<N; c++){
+          const cell = STATE.grid[r][c];
+          if (cell){ cell._fall = 0; }
+        }
+      }
+    }catch(_){}
+    for (let c=0; c<N; c++){
+      let write = N-1;
+      for (let r=N-1; r>=0; r--){
+        const cell = STATE.grid[r][c];
+        if (cell){
+          if (write !== r){
+            STATE.grid[write][c] = cell;
+            STATE.grid[r][c] = null;
+            // mark how far it fell so render can animate "sliding down"
+            try{ cell._fall = (write - r) || 0; }catch(_){}
+          }
+          write -= 1;
+        }
+      }
+    }
+  }
+
+  function refill(){
+  const N = STATE.N;
+  for (let r=0; r<N; r++){
+    for (let c=0; c<N; c++){
+      if (!STATE.grid[r][c]) {
+        STATE.grid[r][c] = newCell(randType());
+        STATE.grid[r][c]._spawn = true;
+        // new tiles should feel like they fell from above the board
+        STATE.grid[r][c]._spawnRows = (r+1);
+      }
+    }
+  }
+}
+
+  function findMatches(){
+    const N = STATE.N;
+    const out = [];
+    for (let r=0; r<N; r++){
+      let run = [{r, c:0}];
+      for (let c=1; c<N; c++){
+        if (STATE.grid[r][c].t === STATE.grid[r][c-1].t) run.push({r,c});
+        else { if (run.length >= 3) out.push(run); run = [{r,c}]; }
+      }
+      if (run.length >= 3) out.push(run);
+    }
+    for (let c=0; c<N; c++){
+      let run = [{r:0, c}];
+      for (let r=1; r<N; r++){
+        if (STATE.grid[r][c].t === STATE.grid[r-1][c].t) run.push({r,c});
+        else { if (run.length >= 3) out.push(run); run = [{r,c}]; }
+      }
+      if (run.length >= 3) out.push(run);
+    }
+    return mergeOverlaps(out);
+  }
+
+  function mergeOverlaps(groups){
+    if (groups.length <= 1) return groups;
+    const sets = groups.map(g => new Set(g.map(p => p.r+","+p.c)));
+    let changed = true;
+    while (changed){
+      changed = false;
+      for (let i=0; i<sets.length; i++){
+        for (let j=i+1; j<sets.length; j++){
+          if (intersects(sets[i], sets[j])){
+            sets[i] = union(sets[i], sets[j]);
+            sets.splice(j,1);
+            changed = true;
+            break;
+          }
+        }
+        if (changed) break;
+      }
+    }
+    return sets.map(s => Array.from(s).map(k => {
+      const parts = k.split(",");
+      return { r:Number(parts[0]), c:Number(parts[1]) };
+    }));
+  }
+  function intersects(a,b){ for (const v of a) if (b.has(v)) return true; return false; }
+  function union(a,b){ const u = new Set(a); for (const v of b) u.add(v); return u; }
+
+  function hasAnyMoves(){
+    const N = STATE.N;
+    for (let r=0; r<N; r++){
+      for (let c=0; c<N; c++){
+        const here = {r,c};
+        const neigh = [{r:r+1,c},{r:r-1,c},{r,c:c+1},{r,c:c-1}];
+        for (const nb of neigh){
+          if (nb.r<0||nb.r>=N||nb.c<0||nb.c>=N) continue;
+          swap(here, nb);
+          const ok = findMatches().length > 0;
+          swap(here, nb);
+          if (ok) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  function shuffleBoard(){
+    const N = STATE.N;
+    const flat = [];
+    for (let r=0; r<N; r++) for (let c=0; c<N; c++) flat.push(STATE.grid[r][c].t);
+    for (let i=flat.length-1; i>0; i--){
+      const j = (Math.random()*(i+1))|0;
+      const tmp = flat[i]; flat[i] = flat[j]; flat[j] = tmp;
+    }
+    let k=0;
+    for (let r=0; r<N; r++) for (let c=0; c<N; c++) STATE.grid[r][c].t = flat[k++];
+  }
+
+  function checkWin(){
+    const needs = STATE.needsRemaining || {};
+    for (const t of TILE_TYPES) if ((needs[t]||0) > 0) return false;
+    return true;
+  }
+
+  
+
+  function renderRecapNeeds(targetId){
+    try{
+      const el = document.getElementById(targetId);
+      if (!el) return;
+      const start = (STATE && STATE.needsStart) ? STATE.needsStart : {};
+      const rem = (STATE && STATE.needsRemaining) ? STATE.needsRemaining : {};
+      const order = ["food","support","hygiene","firstaid","clothing"];
+      const meta = {
+        food:{ color:"#7f963e", icon:"fa-salad" },
+        support:{ color:"#ff7c10", icon:"fa-user-headset" },
+        hygiene:{ color:"#078bc9", icon:"fa-soap" },
+        firstaid:{ color:"#bf2b2b", icon:"fa-briefcase-medical" },
+        clothing:{ color:"#8b2ccd", icon:"fa-shirt" }
+      };
+      const parts = [];
+      for (const k of order){
+        const got = Math.max(0, Number(start[k]||0) - Number(rem[k]||0));
+        if (got > 0){
+          const m = meta[k];
+          parts.push(`<div class="recapNeed" style="background:${m.color}; position:relative;">
+            <i class="fa-duotone fa-solid ${m.icon} fa-xl" style="--fa-primary-color:#fff; --fa-secondary-color:#fff;"></i>
+            <div class="n">${got}</div>
+          </div>`);
+        }
+      }
+      el.innerHTML = parts.join("") || `<div class="recapLabel">no needs tracked</div>`;
+    }catch(_){}
+  }
+
+function finishMission(){
+    stopTimer();
+    STATE.inPlay = false;
+
+    const m = STATE.selectedMission;
+    const mid = m ? m.id : (STATE.selectedPinId || null);
+
+    // mark done today
+    if (mid) STATE.completedToday.add(mid);
+
+    
+    // reflect completion in mission objects so pin icon updates immediately
+    try{
+      if (mid && Array.isArray(STATE.missions)){
+        const obj = STATE.missions.find(x => x && x.id === mid);
+        if (obj) obj.done = true;
+      }
+    }catch(_){ }
+// served + stars
+    const served = Number(STATE.peopleServedMission || 0);
+    try{ addTodayServed(served); }catch(_){ }
+    try{ updateTodayServedUI(); }catch(_){ }
+    const stars = served >= 220 ? 3 : served >= 130 ? 2 : served >= 60 ? 1 : 0;
+
+    // persist campaign stats
+    STATE.campaign = STATE.campaign || { day: todayKey(), completed:{}, best:{}, stars:{} };
+    if (mid){
+      STATE.campaign.completed[mid] = true;
+      STATE.campaign.best[mid] = Math.max(Number(STATE.campaign.best[mid]||0), served);
+      STATE.campaign.stars[mid] = Math.max(Number(STATE.campaign.stars[mid]||0), stars);
+      STATE.campaign.day = todayKey();
+      saveCampaign();
+    }
+
+    // win modal text
+    try{
+      const wp = document.getElementById("winPeople");
+      if (wp) wp.textContent = String(served);
+      const ws = document.getElementById("winSummary");
+      if (ws) ws.textContent = "pin completed for today. your clears became real help.";
+    }catch(_){}
+
+    // recap needs satisfied
+    renderRecapNeeds("winNeeds");
+
+    // show win modal
+    try{ AudioManager.playSfx("win"); }catch(_){ }
+    try{ $("winModal").classList.remove("failshake"); $("winModal").classList.add("celebrate"); setTimeout(()=>{ try{ $("winModal").classList.remove("celebrate"); }catch(_){ } }, 1600); }catch(_){ }
+    $("overlay").style.display = "block";
+    $("winModal").style.display = "block";
+  }
+
+
+  
+  function closeWin(){
+    clearTimeout(STATE._autoWinTimer);
+    try{ $("winModal").style.display = "none"; }catch(_){}
+    try{ $("overlay").style.display = "none"; }catch(_){}
+    showScreen("map");
+    try{ renderMap(); }catch(_){}
+  }
+
+  function closeFail(){
+    try{ $("failModal").style.display = "none"; }catch(_){}
+    try{ $("overlay").style.display = "none"; }catch(_){}
+  }
+
+
+function closeWinModal(){
+    $("winModal").style.display = "none";
+    $("overlay").style.display = "none";
+  }
+
+  
+  function failMission(reason){
+    stopTimer();
+    STATE.inPlay = false;
+    const served = Number(STATE.peopleServedMission || 0);
+    try{ $("failPeople").textContent = String(served); }catch(_){}
+    try{ $("failReason").textContent = (reason || "mission failed"); }catch(_){}
+    try{ renderRecapNeeds("failNeeds"); }catch(_){}
+    try{ AudioManager.playSfx("fail"); }catch(_){}
+    try{ $("failModal").classList.remove("celebrate"); $("failModal").classList.add("failshake"); setTimeout(()=>{ try{ $("failModal").classList.remove("failshake"); }catch(_){ } }, 800); }catch(_){}
+    try{ $("overlay").style.display = "block"; $("failModal").style.display = "block"; }catch(_){}
+  }
+function startTimer(){
+    stopTimer();
+    STATE.timer = setInterval(() => {
+      STATE.timeLeft -= 1;
+      if (STATE.timeLeft < 0) STATE.timeLeft = 0;
+      $("timeLeft").textContent = fmtTime(STATE.timeLeft);
+      if (STATE.timeLeft <= 0){
+        failMission("out of time");
+      }
+    }, 1000);
+  }
+  function stopTimer(){ if (STATE.timer){ clearInterval(STATE.timer); STATE.timer = null; } }
+
+  function adj(a,b){ return (Math.abs(a.r-b.r) + Math.abs(a.c-b.c)) === 1; }
+  function swap(a,b){ const tmp = STATE.grid[a.r][a.c]; STATE.grid[a.r][a.c] = STATE.grid[b.r][b.c]; STATE.grid[b.r][b.c] = tmp; }
+  function randType(){ return TILE_TYPES[(Math.random()*TILE_TYPES.length)|0]; }
+  function newCell(t){ return { id:(++STATE._id), t }; }
+  function ensureCellIds(){
+    if (!STATE || !STATE.grid) return;
+    for (let r=0; r<STATE.N; r++) for (let c=0; c<STATE.N; c++){
+      const cell = STATE.grid[r]?.[c];
+      if (cell && (cell.id==null)) cell.id = (++STATE._id);
+    }
+  }
+
+  function fmtTime(sec){ sec = Math.max(0, sec|0); const m = Math.floor(sec/60); const s = sec%60; return `${m}:${String(s).padStart(2,"0")}`; }
+
+  // Convert normalized (x,y) pins to approximate Indianapolis lat/lng bounding box.
+  // x: 0..1 left→right, y: 0..1 top→bottom
+  function xyToLatLng(x, y){
+    const latMin = 39.70, latMax = 39.84;
+    const lngMin = -86.30, lngMax = -86.05;
+    const lat = latMax - (y * (latMax - latMin));
+    const lng = lngMin + (x * (lngMax - lngMin));
+    return {lat, lng};
+  }
+
+
+  function makeNeedChip(type, value){
+    const chip = document.createElement("div");
+    chip.className = "needChip";
+    chip.style.background = COLORS[type] || "rgba(255,255,255,0.12)";
+    chip.style.color = "#ffffff";
+    chip.innerHTML = `<span class="num">${value}</span>`;
+    chip.title = type;
+    return chip;
+  }
+
+  function makeFreshBoardNoMatches(N){
+  for (let tries=0; tries<2000; tries++){
+    const g = Array.from({length:N}, () => Array.from({length:N}, () => newCell(randType())));
+    const old = STATE.grid; STATE.grid = g;
+    const ok = (findMatches().length === 0) && hasAnyMoves();
+    STATE.grid = old;
+    if (ok) return g;
+  }
+  return Array.from({length:N}, () => Array.from({length:N}, () => newCell(randType())));
+}
+
+  function buildDailyMissions(){
+  const d = new Date();
+  const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  const rng = mulberry32(hash(key));
+
+  // fixed city pins across indiana (lat/lng), so the campaign map can zoom out and feel statewide
+  const basePins = [
+    { id:"indy",  name:"indianapolis", lat:39.7684, lng:-86.1580 },
+    { id:"fw",    name:"fort wayne",   lat:41.0793, lng:-85.1394 },
+    { id:"sb",    name:"south bend",   lat:41.6764, lng:-86.2520 },
+    { id:"btown", name:"bloomington",  lat:39.1653, lng:-86.5264 },
+    { id:"evv",   name:"evansville",   lat:37.9716, lng:-87.5711 },
+    { id:"hamm",  name:"hammond",      lat:41.5834, lng:-87.5000 },
+    { id:"laf",   name:"lafayette",    lat:40.4167, lng:-86.8753 },
+    { id:"munc",  name:"muncie",       lat:40.1934, lng:-85.3864 },
+    { id:"koko",  name:"kokomo",       lat:40.4864, lng:-86.1336 },
+    { id:"th",    name:"terre haute",  lat:39.4667, lng:-87.4139 },
+  ];
+
+  return basePins.map((p,i) => {
+    const people = 65 + Math.floor(rng()*120);
+    const moves  = 18 + Math.floor(rng()*10);
+    const time   = 90 + Math.floor(rng()*60);
+    const needs  = {
+      hygiene: 10 + Math.floor(rng()*12),
+      food:    10 + Math.floor(rng()*12),
+      clothing: 8 + Math.floor(rng()*10),
+      firstaid: 6 + Math.floor(rng()*10),
+      support:  9 + Math.floor(rng()*12),
+    };
+    return Object.assign({}, p, {people, moves, time, needs});
+  });
+}
+  function hash(str){ let h = 2166136261; for (let i=0; i<str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619);} return h >>> 0; }
+  function mulberry32(a){ return function(){ let t = a += 0x6D2B79F5; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; } }
+  function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
+})();
+</script>
+
+<div class="modal" id="donationModal">
+  <div class="modalHeader">
+    <div>
+      <h2>donation boost</h2>
+      <p>choose who to support — we’ll clear every tile of that type.</p>
+    </div>
+    </div>
+  <div class="modalBody">
+    <div class="sep"></div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;" id="donationChoices"></div>
+    <div class="sep"></div>
+    <p class="hint">this translates directly into people served.</p>
+  </div>
+  
+</div>
+
+<div id="toast" style="display:none;position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:999;background:rgba(0,0,0,0.82);border:1px solid rgba(255,255,255,0.18);padding:10px 14px;border-radius:14px;font-weight:900;color:#fff;letter-spacing:0.3px;text-transform: lowercase;"></div>
+<script>
+(function(){
+  const START_SFX = "https://reversebus.com/carerush/audio/game%20start%20sound.mp3";
+  function playStartSound() {
+    try {
+      // prefer existing audio system if available
+      if (typeof ensureAudio === "function") try{ ensureAudio(); }catch(_e){}
+      // fire-and-forget HTMLAudioElement (user gesture allows autoplay)
+      const a = new Audio(START_SFX);
+      a.volume = 0.95;
+      a.play().catch(()=>{});
+    } catch(e) {}
+  }
+
+  function wireTitleButton() {
+    const btn = document.getElementById("btnTitleStart");
+    if(!btn) return;
+    // avoid double-binding
+    if(btn.__crWired) return;
+    btn.__crWired = true;
+
+    // remove any inline onclick that might call old flows
+    try{ btn.removeAttribute("onclick"); }catch(_e){}
+
+    btn.addEventListener("click", function(ev){
+      try{ ev.preventDefault(); ev.stopPropagation(); }catch(_e){}
+      playStartSound();
+      // call the official start flow
+      try {
+        if(window.__CR && typeof __CR.startTitle === "function") {
+          __CR.startTitle();
+        } else if (typeof startTitle === "function") {
+          startTitle();
+        }
+      } catch(e) {}
+    }, {passive:false});
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", wireTitleButton);
+  } else {
+    wireTitleButton();
+  }
+})();
+</script>
+<script>
+(function(){
+  const START_SFX = "https://reversebus.com/carerush/audio/game%20start%20sound.mp3";
+  function playStartSound(){
+    try {
+      if (typeof ensureAudio === "function") { try{ ensureAudio(); }catch(_e){} }
+      const a = new Audio(START_SFX);
+      a.volume = 0.95;
+      a.play().catch(()=>{});
+    } catch(e) {}
+  }
+  function wire(){
+    const btn = document.getElementById("btnCareToPlay");
+    if(!btn || btn.__crStartSfx) return;
+    btn.__crStartSfx = true;
+    btn.addEventListener("click", ()=>playStartSound(), {capture:true});
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", wire);
+  else wire();
+})();
+</script>
+<script>
+(function(){
+  const START_SFX = "https://reversebus.com/carerush/audio/game%20start%20sound.mp3";
+  function playStart(){
+    try {
+      const a = new Audio(START_SFX);
+      a.volume = 0.95;
+      a.play().catch(()=>{});
+    } catch(e) {}
+  }
+  function wire(){
+    const btn = document.getElementById("btnCareToPlay");
+    if(!btn) return;
+    if(btn.__crWiredTitle) return;
+    btn.__crWiredTitle = true;
+
+    // remove inline onclick to avoid stale references
+    try{ btn.removeAttribute("onclick"); }catch(e){}
+
+    btn.addEventListener("click", function(ev){
+      try{ ev.preventDefault(); ev.stopPropagation(); }catch(e){}
+      playStart();
+      try {
+        if(window.__CR && typeof __CR.startTitle === "function") return __CR.startTitle();
+        if(typeof window.startTitle === "function") return window.startTitle();
+        // last resort: show map screen if helper exists
+        if(typeof window.showScreen === "function") window.showScreen("screenMap");
+      } catch(e) {}
+    }, {passive:false});
+  }
+  if(document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wire);
+  } else {
+    wire();
+  }
+})();
+</script>
+<script>
+(function(){
+  const LOGO_URL = "https://reversebus.com/carerush/images/carerush_logo.webp";
+  function ensureTitleLogo(){
+    const st = document.getElementById('screenTitle');
+    if(!st) return;
+    let img = document.getElementById('titleLogo');
+    if(!img){
+      img = document.createElement('img');
+      img.id = 'titleLogo';
+      img.alt = 'care rush';
+      img.decoding = 'async';
+      img.loading = 'eager';
+      img.fetchPriority = 'high';
+      // set size hints to reduce layout shifts
+      img.width = 900;
+      img.height = 420;
+      st.appendChild(img);
+    }
+    img.classList.remove('crLoaded');
+    img.onload = function(){ img.classList.add('crLoaded'); };
+    img.src = LOGO_URL;
+  }
+  if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ensureTitleLogo);
+  } else {
+    ensureTitleLogo();
+  }
+})();
+</script>
+<script>
+/* v2.5.01: move people served / moves left / time left into left pane above community needs,
+   without touching engine code. */
+(function(){
+  function moveHudStatsToLeft(){
+    try{
+      const playLeft = document.getElementById("playLeft");
+      const playRight = document.getElementById("playRight");
+      if(!playLeft || !playRight) return;
+
+      // find the stats row (3 stats) - it's the flex row currently above the board in the right pane
+      const candidate = playRight.querySelector('div[style*="display:flex"][style*="gap"][style*="flex-wrap"]');
+      if(!candidate) return;
+
+      // avoid double-moving
+      if(playLeft.querySelector(".hudRowLeft")) return;
+
+      const wrap = document.createElement("div");
+      wrap.className = "hudRow hudRowLeft";
+      wrap.appendChild(candidate); // move node (not clone)
+
+      // insert above the "community needs" header if present, else at top of card
+      const header = playLeft.querySelector(".cardHeader");
+      if(header) {
+        playLeft.insertBefore(wrap, header);
+      } else {
+        playLeft.insertBefore(wrap, playLeft.firstChild);
+      }
+
+      // keep spacing where it used to be, so layout doesn't jump weirdly
+      const spacer = document.createElement("div");
+      spacer.className = "hudStatsSpacer";
+      spacer.style.height = "10px";
+      playRight.insertBefore(spacer, playRight.firstChild);
+
+    }catch(e){
+      console.warn("[CareRush] moveHudStatsToLeft failed", e);
+    }
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", moveHudStatsToLeft);
+  }else{
+    moveHudStatsToLeft();
+  }
+})();
+
+/* v2.5.01: transition + recap helpers */
+function crGetFade(){ return document.getElementById("screenFade"); }
+function crFadeOn(){ /* disabled */ }
+function crFadeOff(){ /* disabled */ }
+function crMapTransitionOn(){
+  const wrap = document.getElementById("mapWrap");
+  if(!wrap) return;
+  wrap.classList.add("transitioning","zoom");
+}
+function crMapTransitionOff(){
+  const wrap = document.getElementById("mapWrap");
+  if(!wrap) return;
+  wrap.classList.remove("zoom");
+  setTimeout(()=>wrap.classList.remove("transitioning"), 250);
+}
+
+/* render a lightweight mission-complete recap inside the existing modal (or create one) */
+function crShowMissionRecap(mission, stats){
+  // stats: {peopleServed:number, needsSatisfied: {key:count}}
+  const modal = document.getElementById("modal");
+  const titleEl = document.getElementById("modalTitle");
+  const bodyEl  = document.getElementById("modalBody");
+  const actions = document.getElementById("modalActions");
+  if(!modal || !titleEl || !bodyEl || !actions) return;
+
+  modal.classList.add("open","recap");
+  titleEl.textContent = "mission complete";
+
+  const served = (stats && typeof stats.peopleServed==="number") ? stats.peopleServed : (STATE.peopleServed||0);
+  const ns = (stats && stats.needsSatisfied) ? stats.needsSatisfied : (STATE._lastNeedsSatisfied||{});
+
+  const needOrder = ["food","support","hygiene","firstaid","clothing"];
+  const needMeta = {
+    food:    { color: "#7f963e", icon: "fa-salad" },
+    support: { color: "#ff7c10", icon: "fa-user-headset" },
+    hygiene: { color: "#078bc9", icon: "fa-soap" },
+    firstaid:{ color: "#bf2b2b", icon: "fa-briefcase-medical" },
+    clothing:{ color: "#8b2ccd", icon: "fa-shirt" },
+  };
+
+  const needsHtml = needOrder
+    .filter(k => (ns[k]||0) > 0)
+    .map(k=>{
+      const m = needMeta[k];
+      const n = ns[k]||0;
+      return `<div class="recapNeed" style="background:${m.color}; position:relative;">
+        <i class="fa-duotone fa-solid ${m.icon} fa-xl" style="--fa-primary-color:#fff; --fa-secondary-color:#fff;"></i>
+        <div class="n">${n}</div>
+      </div>`;
+    }).join("");
+
+  bodyEl.innerHTML = `
+    <div class="recapRow">
+      <div>
+        <div class="recapBig">${served}</div>
+        <div class="recapLabel">people served</div>
+      </div>
+      <div style="text-align:right">
+        <div class="recapBig">${Object.keys(ns).reduce((a,k)=>a+(ns[k]||0),0)}</div>
+        <div class="recapLabel">needs met</div>
+      </div>
+    </div>
+    <div>
+      <div class="recapLabel" style="margin-bottom:10px;">what you delivered</div>
+      <div class="recapNeeds">${needsHtml || `<div class="recapLabel">no tracked needs</div>`}</div>
+    </div>
+  `;
+
+  actions.innerHTML = `<button class="btn primary" id="recapOkBtn">back to map</button>`;
+  const ok = document.getElementById("recapOkBtn");
+  ok.onclick = () => {
+    modal.classList.remove("open","recap");
+    // mark mission complete + return to map
+    if (mission && mission.id) completeMissionForToday(mission.id);
+    showScreen("map");
+    renderMap();
+  };
+}
+
+</script>
+
+
+<div class="screenFade" id="screenFade"></div>
+</body>
+</html>
