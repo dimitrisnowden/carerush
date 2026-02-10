@@ -1182,7 +1182,8 @@ border-radius: 18px;
     grid-template-columns: 1fr !important;
     grid-template-rows: auto auto minmax(0, 1fr) !important;
     gap: 12px !important;
-    overflow: hidden !important;
+    /* if a phone is short, allow scroll instead of letting UI collide */
+    overflow: auto !important;
   }
 
   /* make left/right panels stack */
@@ -1195,6 +1196,25 @@ border-radius: 18px;
     grid-column: 1 !important;
     grid-row: 3 !important;
     min-height: 0 !important;
+    overflow: auto !important;
+  }
+
+  /* keep the board + action buttons from colliding on short screens */
+  :root{
+    --boardSize: min(92vw, 52vh);
+  }
+  .board{
+    width: var(--boardSize) !important;
+    height: var(--boardSize) !important;
+    max-width: none !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+  }
+  .boardBox{
+    padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+  }
+  .mobileActions{
+    margin-top: 10px !important;
   }
 
   /* map screen: left card above map canvas */
