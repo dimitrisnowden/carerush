@@ -21,7 +21,7 @@
 <link as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg" rel="preload"/>
 <link as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp" rel="preload"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>care rush v2.5.40</title>
+<title>care rush v2.5.41</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer" rel="stylesheet">
 <script crossorigin="anonymous" src="https://kit.fontawesome.com/823902fffe.js"></script>
 <!-- -->
@@ -78,7 +78,7 @@
     .pinDot{width:16px;height:16px;border-radius:999px;background:var(--support);box-shadow:0 10px 24px rgba(0,0,0,0.45);}
     .pin.done .pinDot{background:rgba(255,255,255,0.20);}
     .pin.done{cursor:default;}
-    #playWrap{position:absolute;inset:64px 0 0 0;padding:14px;display:grid;grid-template-columns:360px minmax(0,1fr);grid-template-rows:auto 1fr;gap:12px;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+    #playWrap{position:absolute;inset:64px 0 0 0;padding:14px;display:grid;grid-template-columns:360px minmax(0,1fr);grid-template-rows:auto 1fr;gap:12px;overflow:hidden;}
     #playLeft{grid-column:1;grid-row:1 / span 2;display:flex;flex-direction:column;min-height:0;}
     #playRight{grid-column:2;grid-row:1 / span 2;display:flex;flex-direction:column;min-height:0;}
     .hudRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-bottom:1px solid rgba(255,255,255,0.06);}
@@ -91,7 +91,7 @@
     .miniMapBox{padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0;}
     .miniMap{height:260px;border-radius:18px;background:rgba(0,0,0,0.30);border:1px solid rgba(255,255,255,0.10);position:relative;overflow:hidden;}
     .miniPin{position:absolute;width:12px;height:12px;border-radius:999px;background:var(--support);transform:translate(-50%,-50%);box-shadow:0 10px 22px rgba(0,0,0,0.55);}
-    .boardBox{padding:10px;min-height:0;display:flex;flex-direction:column;gap:8px;}
+    .boardBox{padding:14px;min-height:0;display:flex;flex-direction:column;gap:12px;}
     /* Prevent any tile rendering/animation from bleeding into the action-button area on small screens */
     .board{width:100%;max-width:720px;aspect-ratio:1/1;border-radius:22px;border:1px solid rgba(255,255,255,0.10);padding:12px;display:grid;grid-template-columns:repeat(8, 1fr);grid-template-rows:repeat(8, 1fr);gap:10px;user-select:none;align-self:center;position:relative;overflow:hidden;}
     .tile{border-radius:16px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:950;color:#000000;box-shadow:0 12px 22px rgba(0,0,0,0.25);transition:transform .08s ease, filter .12s ease;will-change:transform;}
@@ -1218,8 +1218,7 @@ border-radius: 18px;
     padding-bottom: calc(6px + env(safe-area-inset-bottom)) !important;
   }
   .mobileActions{
-    margin-top: 2px !important;
-    padding: 0 0 6px 0;
+    margin-top: 6px !important;
   }
 
   /* map screen: left card above map canvas */
@@ -1465,7 +1464,7 @@ border-radius: 18px;
     display:flex !important;
     gap:12px !important;
     justify-content:center !important;
-    margin: 6px 0 calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+    margin: 12px 0 calc(14px + env(safe-area-inset-bottom, 0px)) !important;
 
     position: relative !important; /* key: prevents overlapping other screens */
     bottom: auto !important;
@@ -1487,6 +1486,44 @@ border-radius: 18px;
   .leftActions{ display:none !important; }
 }
 
+
+
+/* --- v2.5.41: mobile layout lock-in (prevents grid/buttons collision on any phone) --- */
+@media (max-width: 900px){
+  #playRight{
+    display:flex;
+    flex-direction:column;
+    height:100dvh;
+    min-height:0;
+    overflow:hidden;
+  }
+
+  /* shave a little vertical space */
+  .hudRow{ margin-bottom:6px; }
+
+  /* the glass box that holds ONLY the grid */
+  #boardBox{
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px;
+    margin-top:8px;
+  }
+
+  /* action buttons must live below the grid, never over it */
+  #mobileActions{
+    flex:0 0 auto;
+    padding:6px 0 10px;
+    margin:6px 0 0;
+  }
+
+  /* slightly tighter buttons to fit small screens */
+  #mobileActions .btn{ padding:10px 14px; }
+}
+
+
 </style>
 <link crossorigin="" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" rel="stylesheet"/>
 <script crossorigin="" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
@@ -1498,7 +1535,7 @@ border-radius: 18px;
 <div class="topbar" id="topbar">
 <div class="brand">
 <img alt="care rush" src="https://reversebus.com/carerush/images/carerush_logo.webp" style="height:34px;width:auto;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.55));"/>
-<div class="badge" id="buildBadge" style="display:none">v2.5.39</div>
+<div class="badge" id="buildBadge" style="display:none">v2.5.41</div>
 </div>
 <div style="display:flex; align-items:center; gap:10px;">
 <div class="badge" id="cityBadge">Indianapolis</div>
@@ -1531,7 +1568,7 @@ border-radius: 18px;
 </div>
 </div>
 </div>
-<div id="titleFooter"><span id="titleBuild">v2.5.39</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
+<div id="titleFooter"><span id="titleBuild">v2.5.41</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
 </section>
 <section class="screen" id="screenMap">
 <div id="mapWrap">
@@ -2704,39 +2741,43 @@ function animateFlip(prev, duration=240){
 
 // --- keep board + action buttons from colliding on any phone size ---
 function layoutBoardToFit(){
-  // Only needed on the mobile single-column layout
   const isMobile = window.matchMedia && window.matchMedia('(max-width: 900px)').matches;
-  const playRight = document.getElementById('playRight');
   const board = document.getElementById('board');
-  const hud = playRight ? playRight.querySelector('.hudRow') : null;
-  const actions = document.getElementById('mobileActions');
-  if (!isMobile || !playRight || !board || !hud || !actions) {
-    // clear any inline sizing if we leave mobile
-    if (board){ board.style.width=''; board.style.height=''; }
+  const boxEl = document.getElementById('boardBox');
+
+  if (!board) return;
+
+  // Desktop: fall back to CSS sizing.
+  if (!isMobile || !boxEl) {
+    board.style.width = '';
+    board.style.height = '';
+    board.style.margin = '';
     return;
   }
 
-  // Measure available space inside playRight
-  const pr = playRight.getBoundingClientRect();
-  const cs = getComputedStyle(playRight);
+  // Mobile: size the board to the *real* container that holds it,
+  // so the action buttons (which live OUTSIDE this box) never overlap tiles.
+  const rect = boxEl.getBoundingClientRect();
+  const cs = getComputedStyle(boxEl);
   const padX = (parseFloat(cs.paddingLeft)||0) + (parseFloat(cs.paddingRight)||0);
   const padY = (parseFloat(cs.paddingTop)||0) + (parseFloat(cs.paddingBottom)||0);
 
-  const gap = 14; // breathing room between sections
-  const availW = Math.max(0, pr.width - padX);
-  const availH = Math.max(0, pr.height - padY - hud.offsetHeight - actions.offsetHeight - gap*2);
+  let availW = Math.max(0, rect.width - padX);
+  let availH = Math.max(0, rect.height - padY);
 
-  // Keep the board square; cap by width and height
-  let size = Math.floor(Math.min(availW, availH));
-  // Don't let it get comically tiny, but also never overflow
-  size = Math.max(220, size);
-  size = Math.min(size, Math.floor(availW), Math.floor(availH));
+  // breathing room for glows/shadows
+  const breathing = 10;
+  availW = Math.max(0, availW - breathing);
+  availH = Math.max(0, availH - breathing);
 
-  if (size > 0){
-    board.style.width = size + 'px';
-    board.style.height = size + 'px';
-  }
+  const size = Math.max(240, Math.floor(Math.min(availW, availH)));
+  board.style.width = size + 'px';
+  board.style.height = size + 'px';
+  board.style.margin = '0 auto';
 }
+
+
+
 
 // keep it responsive during rotation / resize
 window.addEventListener('resize', () => { try{ layoutBoardToFit(); }catch(e){} }, { passive:true });
