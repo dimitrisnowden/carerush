@@ -21,7 +21,7 @@
 <link as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg" rel="preload"/>
 <link as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp" rel="preload"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>care rush v2.5.42</title>
+<title>care rush v2.5.43</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer" rel="stylesheet">
 <script crossorigin="anonymous" src="https://kit.fontawesome.com/823902fffe.js"></script>
 <!-- -->
@@ -1434,13 +1434,13 @@ border-radius: 18px;
 
 /* v2.5.35: mobile action buttons in-flow + hard centering */
 @media (max-width: 820px){
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none;}
+  #screenPlay{overflow:hidden;}
   /* make the whole play screen horizontally centered + scrollable */
   #playWrap{ justify-items:center !important; }
   #playWrap{
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-    -webkit-overflow-scrolling:touch !important;
-    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow:hidden !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
   }
 
   #playLeft, #playRight{
@@ -1486,7 +1486,7 @@ border-radius: 18px;
 
 
 
-/* --- v2.5.42: mobile layout lock-in (prevents grid/buttons collision on any phone) --- */
+/* --- v2.5.43: mobile layout lock-in (prevents grid/buttons collision on any phone) --- */
 @media (max-width: 900px){
   #playRight{
     display:flex;
@@ -1538,7 +1538,7 @@ border-radius: 18px;
 <div class="topbar" id="topbar">
 <div class="brand">
 <img alt="care rush" src="https://reversebus.com/carerush/images/carerush_logo.webp" style="height:34px;width:auto;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.55));"/>
-<div class="badge" id="buildBadge" style="display:none">v2.5.42</div>
+<div class="badge" id="buildBadge" style="display:none">v2.5.43</div>
 </div>
 <div style="display:flex; align-items:center; gap:10px;">
 <div class="badge" id="cityBadge">Indianapolis</div>
@@ -1571,7 +1571,7 @@ border-radius: 18px;
 </div>
 </div>
 </div>
-<div id="titleFooter"><span id="titleBuild">v2.5.42</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
+<div id="titleFooter"><span id="titleBuild">v2.5.43</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
 </section>
 <section class="screen" id="screenMap">
 <div id="mapWrap">
@@ -1674,7 +1674,7 @@ border-radius: 18px;
   // global control surface (for inline handlers + debugging)
   window.__CR = window.__CR || {};
   "use strict";
-  const BUILD = "care rush v2.5.42";
+  const BUILD = "care rush v2.5.43";
 
 
   // title → map entrypoint (used by inline onclick)
