@@ -1,7 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <script>var FALLBACK_LOGO="";</script>
+<script>var FALLBACK_LOGO="";</script>
 <script>
 /* v2.5.17: safety shim so board rendering never crashes if syncNeedChipSize got lost */
 (function(){
@@ -17,15 +18,14 @@
 })();
 </script>
 <meta charset="utf-8"/>
-  <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg">
-<link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp">
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>care rush v2.5.31</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer"/>
-  <script src="https://kit.fontawesome.com/823902fffe.js" crossorigin="anonymous"></script>
+<link as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg" rel="preload"/>
+<link as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp" rel="preload"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>care rush v2.5.33</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer" rel="stylesheet">
+<script crossorigin="anonymous" src="https://kit.fontawesome.com/823902fffe.js"></script>
 <!-- -->
-
-  <style>
+<style>
     :root{--bg:#0b0c10;--panel:rgba(255,255,255,0.06);--panel2:rgba(0,0,0,0.38);--stroke:rgba(255,255,255,0.14);--text:rgba(255,255,255,0.92);--muted:rgba(255,255,255,0.62);--shadow:0 20px 70px rgba(0,0,0,0.55);--food:#7f963e;--support:#ff7c10;--hygiene:#078bc9;--firstaid:#bf2b2b;--clothing:#8b2ccd;}
     *{box-sizing:border-box;}
     html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 20% 10%, rgba(255,124,16,0.12), transparent 60%),radial-gradient(900px 700px at 90% 20%, rgba(7,139,201,0.12), transparent 55%),var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";}
@@ -1377,9 +1377,9 @@ border-radius: 18px;
 
 
 /* v2.5.17 tweaks: state pill padding + map attribution readability */
-#cityBadge{ padding: 8px 14px; font-size: 14px; }
+#cityBadge{ padding: 7px 12px; font-size: 14px; text-transform: lowercase; }
 @media (max-width: 820px){
-  #cityBadge{ padding: 8px 14px !important; font-size: 14px !important; }
+  #cityBadge{ padding: 7px 12px !important; font-size: 14px !important; text-transform: lowercase !important; }
   .maplibregl-ctrl-bottom-right{ max-width: 92vw; }
   .maplibregl-ctrl-attrib{ font-size: 11px; line-height: 14px; padding: 4px 6px; white-space: normal; }
   .maplibregl-ctrl-attrib.maplibregl-compact{ background: rgba(0,0,0,0.35); border-radius: 10px; }
@@ -1387,7 +1387,7 @@ border-radius: 18px;
 }
 
 
-/* ===== v2.5.31: play HUD centering + tighter needs + city pill ===== */
+/* ===== v2.5.33: play HUD centering + tighter needs + city pill ===== */
 .hudRow > div{width:100%;}
 .hudRow > div{justify-content:center;}
 .hudStat{display:flex;flex-direction:column;align-items:center;text-align:center;}
@@ -1400,7 +1400,7 @@ border-radius: 18px;
 }
 
 
-/* v2.5.31: grid screen header dynamic + remove mission pill */
+/* v2.5.33: grid screen header dynamic + remove mission pill */
 #missionNameBadge{ display:none !important; }
 #playLeft .cardHeader h3{ text-transform:none; }
 @media (max-width: 820px){
@@ -1409,186 +1409,190 @@ border-radius: 18px;
 }
 
 
-/* v2.5.31: ensure play screen content is horizontally centered on mobile */
+
+/* v2.5.33: mobile action bar + hard centering */
 @media (max-width: 820px){
-  #playWrap{ justify-items: center !important; }
+  /* make the whole play screen horizontally centered */
+  #playWrap{ justify-items:center !important; }
+  #playWrap{ overflow:auto !important; -webkit-overflow-scrolling:touch !important; }
   #playLeft, #playRight{
-    width: 100% !important;
+    width:100% !important;
     max-width: 720px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
   }
   .boardBox{
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    align-items: center !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+    align-items:center !important;
   }
-  #board{
-    width: 100% !important;
-    max-width: 720px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+  #board{ margin-left:auto !important; margin-right:auto !important; }
+
+  /* show mobile action buttons under the board */
+  #mobileActions{
+    display:flex !important;
+    gap:12px !important;
+    justify-content:center !important;
+    margin-top:10px !important;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
   }
+  #mobileActions .btn{
+    min-height:44px !important;
+    padding: 10px 16px !important;
+    border-radius: 999px !important;
+  }
+
+  /* leftActions can remain for desktop; hide on mobile to avoid layout weirdness */
+  .leftActions{ display:none !important; }
 }
-
 </style>
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="">
+<link crossorigin="" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" rel="stylesheet"/>
+<script crossorigin="" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
-
-<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet"/>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-</head>
-
-
+</link></head>
 <body>
 <div class="topbar" id="topbar">
-  <div class="brand">
-    <img src="https://reversebus.com/carerush/images/carerush_logo.webp" alt="care rush" style="height:34px;width:auto;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.55));" />
-    <div class="badge" id="buildBadge" style="display:none">v2.5.31</div>
-  </div>
-  <div style="display:flex; align-items:center; gap:10px;">
-    <div class="badge" id="cityBadge">Indianapolis</div>
-    
-    <button class="btn ghost" id="btnBgm" title="Toggle music" aria-label="Toggle music"><i class="fa-duotone fa-solid fa-music" aria-hidden="true"></i></button>
-    <button class="btn ghost" id="btnSfx" title="Toggle sound effects" aria-label="Toggle sound effects"><i class="fa-duotone fa-solid fa-bells" aria-hidden="true"></i></button>
-    <button class="btn ghost" id="btnHome" title="Return to title" aria-label="Return to title"><i class="fa-solid fa-house" aria-hidden="true"></i></button>
-  </div>
+<div class="brand">
+<img alt="care rush" src="https://reversebus.com/carerush/images/carerush_logo.webp" style="height:34px;width:auto;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.55));"/>
+<div class="badge" id="buildBadge" style="display:none">v2.5.33</div>
 </div>
-
+<div style="display:flex; align-items:center; gap:10px;">
+<div class="badge" id="cityBadge">Indianapolis</div>
+<button aria-label="Toggle music" class="btn ghost" id="btnBgm" title="Toggle music"><i aria-hidden="true" class="fa-duotone fa-solid fa-music"></i></button>
+<button aria-label="Toggle sound effects" class="btn ghost" id="btnSfx" title="Toggle sound effects"><i aria-hidden="true" class="fa-duotone fa-solid fa-bells"></i></button>
+<button aria-label="Return to title" class="btn ghost" id="btnHome" title="Return to title"><i aria-hidden="true" class="fa-solid fa-house"></i></button>
+</div>
+</div>
 <section class="screen active" id="screenTitle">
-  <div id="titleCenter">
-    <div class="titleCard">
-      <div class="titleLeft">
-        <h1>kit match</h1>
-        <p>match essentials. chain combos. translate clears into people served.</p>
-        <div class="kicker">
-          <div class="pill">5 tiles</div><div class="pill">people served &gt; score</div><div class="pill">daily missions</div><div class="pill">indy map</div>
-        </div>
-<div class="small">build focus: stable flow (title → map → mission → play) with clean layout.</div>
-      </div>
-      <div class="titleRight">
-        <div class="metric"><div class="lab">people served</div><div class="big" id="peopleServedTitle">0</div></div>
-        <div class="stack">
-          <button class="btn primary" id="btnCareToPlay" onclick="__CR.startTitle()">do you care to play? <i class="fa-duotone fa-solid fa-circle-play fa-xl fa-bounce" aria-hidden="true"></i></button>
-          <button class="btn" id="btnDaily">daily kit</button>
-          <button class="btn" id="btnLevels" disabled style="opacity:0.55; cursor:not-allowed;">level select (soon)</button>
-        </div>
-      </div>
-      <div class="modalFooter">
-        <button class="btn" id="btnWinToMap">serve next city</button>
-      </div>
-    </div>
-  </div>
-  <div id="titleFooter"><span id="titleBuild">v2.5.31</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
-</section>
-
-<section class="screen" id="screenMap">
-  <div id="mapWrap">
-  <div class="card" id="mapLeft">
-<div class="cardBody">
-        <span class="badge" id="missionCountBadge" style="display:none">0 pins</span>
-        <div class="todayServedBox" id="todayServedBox">
-          <div class="k">today you served</div>
-          <div class="v"><span id="todayServedNum">0</span> people</div>
-        </div>
+<div id="titleCenter">
+<div class="titleCard">
+<div class="titleLeft">
+<h1>kit match</h1>
+<p>match essentials. chain combos. translate clears into people served.</p>
+<div class="kicker">
+<div class="pill">5 tiles</div><div class="pill">people served &gt; score</div><div class="pill">daily missions</div><div class="pill">indy map</div>
 </div>
-    </div>
-    <div class="card" id="mapCard" style="padding:14px; overflow:hidden;">
-      <div class="mapCanvas" id="mapCanvas">
-  <div id="leafletMap"></div>
-  <div id="mapGL"></div>
-  <div id="mapStatus"></div>
+<div class="small">build focus: stable flow (title → map → mission → play) with clean layout.</div>
+</div>
+<div class="titleRight">
+<div class="metric"><div class="lab">people served</div><div class="big" id="peopleServedTitle">0</div></div>
+<div class="stack">
+<button class="btn primary" id="btnCareToPlay" onclick="__CR.startTitle()">do you care to play? <i aria-hidden="true" class="fa-duotone fa-solid fa-circle-play fa-xl fa-bounce"></i></button>
+<button class="btn" id="btnDaily">daily kit</button>
+<button class="btn" disabled="" id="btnLevels" style="opacity:0.55; cursor:not-allowed;">level select (soon)</button>
+</div>
+</div>
+<div class="modalFooter">
+<button class="btn" id="btnWinToMap">serve next city</button>
+</div>
+</div>
+</div>
+<div id="titleFooter"><span id="titleBuild">v2.5.33</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
+</section>
+<section class="screen" id="screenMap">
+<div id="mapWrap">
+<div class="card" id="mapLeft">
+<div class="cardBody">
+<span class="badge" id="missionCountBadge" style="display:none">0 pins</span>
+<div class="todayServedBox" id="todayServedBox">
+<div class="k">today you served</div>
+<div class="v"><span id="todayServedNum">0</span> people</div>
+</div>
+</div>
+</div>
+<div class="card" id="mapCard" style="padding:14px; overflow:hidden;">
+<div class="mapCanvas" id="mapCanvas">
+<div id="leafletMap"></div>
+<div id="mapGL"></div>
+<div id="mapStatus"></div>
 <div class="mapAttribution">© maptiler © openstreetmap contributors</div>
 <div class="mapGridOverlay"></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="screen" id="screenPlay">
-  <div id="playWrap">
-    <div class="card" id="playLeft">
-      <div class="cardHeader"><h3><span id="communityNeedsTitle">community needs</span></h3><span class="badge" id="missionNameBadge">mission</span></div>
-      <div class="needsWrap" id="needsChips"></div>
-      <div class="miniMapBox">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-          <div class="badge">city map</div><div class="badge" id="pinStatusBadge">today</div>
-        </div>
-        <div class="miniMap" id="miniMap"></div>
-      
-        <div class="leftActions">
-          <button class="btn" id="btnShuffle">shuffle</button>
-          <button class="btn" id="btnQuit">back to map</button>
-        </div>
 </div>
-    </div>
-
-    <div class="card" id="playRight">
-      <div class="hudRow">
-        <div style="display:flex; gap:14px; flex-wrap:wrap;">
-          <div class="hudStat"><div class="k">people</div><div class="v" id="peopleServed">0</div></div>
-          <div class="hudStat"><div class="k">moves</div><div class="v" id="movesLeft">0</div></div>
-          <div class="hudStat"><div class="k">time</div><div class="v" id="timeLeft">0:00</div></div>
-        </div>
-      </div>
-      <div class="boardBox">
-<div class="board" id="board"></div>
-      </div>
-    </div>
-  </div>
+</div>
 </section>
+<section class="screen" id="screenPlay">
+<div id="playWrap">
+<div class="card" id="playLeft">
+<div class="cardHeader"><h3><span id="communityNeedsTitle">community needs</span></h3><span class="badge" id="missionNameBadge">mission</span></div>
+<div class="needsWrap" id="needsChips"></div>
+<div class="miniMapBox">
+<div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+<div class="badge">city map</div><div class="badge" id="pinStatusBadge">today</div>
+</div>
+<div class="miniMap" id="miniMap"></div>
+<div class="leftActions">
+<button class="btn" id="btnShuffle">shuffle</button>
+<button class="btn" id="btnQuit">back to map</button>
+</div>
+</div>
+</div>
+<div class="card" id="playRight">
+<div class="hudRow">
+<div style="display:flex; gap:14px; flex-wrap:wrap;">
+<div class="hudStat"><div class="k">people</div><div class="v" id="peopleServed">0</div></div>
+<div class="hudStat"><div class="k">moves</div><div class="v" id="movesLeft">0</div></div>
+<div class="hudStat"><div class="k">time</div><div class="v" id="timeLeft">0:00</div></div>
+</div>
+</div>
+<div class="boardBox">
+<div class="board" id="board"></div>
+</div>
+<div class="mobileActions" id="mobileActions">
+<button class="btn" id="btnShuffleMobile">shuffle</button>
+<button class="btn" id="btnBackToMapMobile">back to map</button>
+</div>
 
+</div>
+</div>
+</section>
 <div class="overlay" id="overlay"></div>
 <div class="modal" id="missionModal">
-  <div class="modalHeader">
-    <div>
-      <h2>there are <span id="missionPeople">0</span> people that need your help!<br><br>match needed resources before you run out of moves/time.</h2>
-    </div>
-    </div>
-  <div class="modalBody">
-<div style="display:flex; gap:10px; flex-wrap:wrap;" id="missionNeedsPreview"></div>
+<div class="modalHeader">
+<div>
+<h2>there are <span id="missionPeople">0</span> people that need your help!<br/><br/>match needed resources before you run out of moves/time.</h2>
+</div>
+</div>
+<div class="modalBody">
+<div id="missionNeedsPreview" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
 <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center; width:100%;">
-      <div class="badge"><strong>moves: <span id="missionMoves">0</span></strong></div>
-      <div class="badge"><strong>time: <span id="missionTime">0:00</span></strong></div>
-    </div>
-  </div>
-  <div class="modalFooter">
-    <button class="btn secondary btnMissionNotNow" id="btnMissionNotNow">not now</button>
-    <button class="btn primary btnPrimary btnMissionStart" id="btnMissionStart">start <i class="fa-duotone fa-solid fa-circle-play fa-bounce"></i></button>
-  </div>
+<div class="badge"><strong>moves: <span id="missionMoves">0</span></strong></div>
+<div class="badge"><strong>time: <span id="missionTime">0:00</span></strong></div>
 </div>
-
-
+</div>
+<div class="modalFooter">
+<button class="btn secondary btnMissionNotNow" id="btnMissionNotNow">not now</button>
+<button class="btn primary btnPrimary btnMissionStart" id="btnMissionStart">start <i class="fa-duotone fa-solid fa-circle-play fa-bounce"></i></button>
+</div>
+</div>
 <div class="modal" id="failModal">
-  <div class="modalHeader">
-    <div><h2>mission failed</h2><p><span id="failReason">out of time</span>. you served <span id="failPeople">0</span> people.</p></div>
-  </div>
-  <div class="modalBody">
-<div id="failNeeds" class="recapNeeds" style="margin:10px 0 2px 0;"></div>
-    <div class="small" id="failSummary">tomorrow is another run.</div>
-  </div>
-  <div class="modalFooter" style="justify-content:center; gap:10px; flex-wrap:wrap;">
-    <button class="btn" id="btnFailRetry">try again</button>
-    <button class="btn primary" id="btnFailBack">back to map</button>
-  </div>
+<div class="modalHeader">
+<div><h2>mission failed</h2><p><span id="failReason">out of time</span>. you served <span id="failPeople">0</span> people.</p></div>
 </div>
-
+<div class="modalBody">
+<div class="recapNeeds" id="failNeeds" style="margin:10px 0 2px 0;"></div>
+<div class="small" id="failSummary">tomorrow is another run.</div>
+</div>
+<div class="modalFooter" style="justify-content:center; gap:10px; flex-wrap:wrap;">
+<button class="btn" id="btnFailRetry">try again</button>
+<button class="btn primary" id="btnFailBack">back to map</button>
+</div>
+</div>
 <div class="modal" id="winModal">
-  <div class="modalHeader">
-    <div><h2>mission complete!</h2><p>you served <span id="winPeople">0</span> people.</p></div>
+<div class="modalHeader">
+<div><h2>mission complete!</h2><p>you served <span id="winPeople">0</span> people.</p></div>
 </div>
-  <div class="modalBody">
-<div id="winNeeds" class="recapNeeds" style="margin:10px 0 2px 0;"></div><div class="small" id="winSummary">nice.</div></div>
-  <div class="modalFooter"><button class="btn primary" id="btnBackToMap">serve next city</button></div>
+<div class="modalBody">
+<div class="recapNeeds" id="winNeeds" style="margin:10px 0 2px 0;"></div><div class="small" id="winSummary">nice.</div></div>
+<div class="modalFooter"><button class="btn primary" id="btnBackToMap">serve next city</button></div>
 </div>
-
 <script>
   (() => {
   // global control surface (for inline handlers + debugging)
   window.__CR = window.__CR || {};
   "use strict";
-  const BUILD = "care rush v2.5.31";
+  const BUILD = "care rush v2.5.33";
 
 
   // title → map entrypoint (used by inline onclick)
@@ -3335,21 +3339,18 @@ function startTimer(){
   function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
 })();
 </script>
-
 <div class="modal" id="donationModal">
-  <div class="modalHeader">
-    <div>
-      <h2>donation boost</h2>
-      <p>choose who to support — we’ll clear every tile of that type.</p>
-    </div>
-    </div>
-  <div class="modalBody">
-<div style="display:flex; gap:10px; flex-wrap:wrap;" id="donationChoices"></div>
-<p class="hint">this translates directly into people served.</p>
-  </div>
-  
+<div class="modalHeader">
+<div>
+<h2>donation boost</h2>
+<p>choose who to support — we’ll clear every tile of that type.</p>
 </div>
-
+</div>
+<div class="modalBody">
+<div id="donationChoices" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+<p class="hint">this translates directly into people served.</p>
+</div>
+</div>
 <div id="toast" style="display:none;position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:999;background:rgba(0,0,0,0.82);border:1px solid rgba(255,255,255,0.18);padding:10px 14px;border-radius:14px;font-weight:900;color:#fff;letter-spacing:0.3px;text-transform: lowercase;"></div>
 <script>
 (function(){
@@ -3611,15 +3612,23 @@ function crShowMissionRecap(mission, stats){
 }
 
 </script>
-
 <script>
 (function(){
   const el = document.getElementById("titleFooterYear");
   if (el) el.textContent = String(new Date().getFullYear());
 })();
+
+
+// v2.5.33: mobile action buttons (no logic changes)
+(function(){
+  const shM = document.getElementById('btnShuffleMobile');
+  const bkM = document.getElementById('btnBackToMapMobile');
+  const sh = document.getElementById('btnShuffle');
+  const bk = document.getElementById('btnQuit') || document.getElementById('btnBackToMap');
+  if (shM && sh) shM.addEventListener('click', ()=> sh.click());
+  if (bkM && bk) bkM.addEventListener('click', ()=> bk.click());
+})();
 </script>
-
-
 <div class="screenFade" id="screenFade"></div>
 </body>
 </html>
