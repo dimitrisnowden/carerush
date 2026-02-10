@@ -21,7 +21,7 @@
 <link as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg" rel="preload"/>
 <link as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp" rel="preload"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>care rush v2.5.39</title>
+<title>care rush v2.5.40</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer" rel="stylesheet">
 <script crossorigin="anonymous" src="https://kit.fontawesome.com/823902fffe.js"></script>
 <!-- -->
@@ -1633,7 +1633,7 @@ border-radius: 18px;
   // global control surface (for inline handlers + debugging)
   window.__CR = window.__CR || {};
   "use strict";
-  const BUILD = "care rush v2.5.39";
+  const BUILD = "care rush v2.5.40";
 
 
   // title → map entrypoint (used by inline onclick)
@@ -2700,7 +2700,49 @@ function animateFlip(prev, duration=240){
   });
 }
 
+
+// --- keep board + action buttons from colliding on any phone size ---
+function layoutBoardToFit(){
+  // Only needed on the mobile single-column layout
+  const isMobile = window.matchMedia && window.matchMedia('(max-width: 900px)').matches;
+  const playRight = document.getElementById('playRight');
+  const board = document.getElementById('board');
+  const hud = playRight ? playRight.querySelector('.hudRow') : null;
+  const actions = document.getElementById('mobileActions');
+  if (!isMobile || !playRight || !board || !hud || !actions) {
+    // clear any inline sizing if we leave mobile
+    if (board){ board.style.width=''; board.style.height=''; }
+    return;
+  }
+
+  // Measure available space inside playRight
+  const pr = playRight.getBoundingClientRect();
+  const cs = getComputedStyle(playRight);
+  const padX = (parseFloat(cs.paddingLeft)||0) + (parseFloat(cs.paddingRight)||0);
+  const padY = (parseFloat(cs.paddingTop)||0) + (parseFloat(cs.paddingBottom)||0);
+
+  const gap = 14; // breathing room between sections
+  const availW = Math.max(0, pr.width - padX);
+  const availH = Math.max(0, pr.height - padY - hud.offsetHeight - actions.offsetHeight - gap*2);
+
+  // Keep the board square; cap by width and height
+  let size = Math.floor(Math.min(availW, availH));
+  // Don't let it get comically tiny, but also never overflow
+  size = Math.max(220, size);
+  size = Math.min(size, Math.floor(availW), Math.floor(availH));
+
+  if (size > 0){
+    board.style.width = size + 'px';
+    board.style.height = size + 'px';
+  }
+}
+
+// keep it responsive during rotation / resize
+window.addEventListener('resize', () => { try{ layoutBoardToFit(); }catch(e){} }, { passive:true });
+window.addEventListener('orientationchange', () => { setTimeout(() => { try{ layoutBoardToFit(); }catch(e){} }, 120); }, { passive:true });
+
 function renderBoard(){
+    layoutBoardToFit();
     const board = $("board");
     board.innerHTML = "";
     const anim=[];
