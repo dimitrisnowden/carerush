@@ -3,7 +3,7 @@
 <head>
   <script>var FALLBACK_LOGO="";</script>
 <script>
-/* v2.5.17: safety shim so board rendering never crashes if syncNeedChipSize got lost */
+/* v2.5.58: safety shim so board rendering never crashes if syncNeedChipSize got lost */
 (function(){
   if(typeof window.syncNeedChipSize === "function") return;
   window.syncNeedChipSize = function(){
@@ -20,7 +20,7 @@
   <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_bg.jpg">
 <link rel="preload" as="image" href="https://reversebus.com/carerush/images/carerush_logo.webp">
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>care rush v2.5.31</title>
+  <title>care rush v2.5.58</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer"/>
   <script src="https://kit.fontawesome.com/823902fffe.js" crossorigin="anonymous"></script>
 <!-- -->
@@ -33,7 +33,7 @@
     .screen{pointer-events:none;}
     .screen.active{pointer-events:auto;}
     .screen.active{display:block;}
-    /* v2.5.17: enforce screen stack order (prevents title/map overlap on mobile reload) */
+    /* v2.5.58: enforce screen stack order (prevents title/map overlap on mobile reload) */
     #screenTitle{z-index:30;}
     #screenMap{z-index:20;}
     #screenPlay{z-index:10;}
@@ -309,11 +309,11 @@
 /* keep anchor translate, then scale up */
 .crGLPin{ transform: translate(-50%,-100%) scale(2); transform-origin: 50% 100%; }
 
-/* --- animations v2.5.17 --- */
+/* --- animations v2.5.58 --- */
 @keyframes crPop { 0%{transform:scale(1)} 40%{transform:scale(0.92)} 100%{transform:scale(1)} }
 .tile.cr-pop { animation: crPop 140ms ease; }
 @keyframes crNope { 0%{transform:translateX(0)} 25%{transform:translateX(-6px)} 50%{transform:translateX(6px)} 75%{transform:translateX(-4px)} 100%{transform:translateX(0)} }
-/* --- animations v2.5.17 --- */
+/* --- animations v2.5.58 --- */
 @keyframes crClear { 0%{transform:scale(1);opacity:1;filter:none} 100%{transform:scale(0.25);opacity:0;filter:blur(1px)} }
 .tile.cr-clear { animation: crClear 200ms ease forwards; }
 @keyframes crSpawn {
@@ -407,7 +407,7 @@
 #titleFooter #titleBuild{font-weight:800;}
 @media (max-width:820px){#titleFooter{font-size:11px;bottom:calc(44px + env(safe-area-inset-bottom,0px));}}
 
-/* --- title screen polish v2.5.17 (safe) --- */
+/* --- title screen polish v2.5.58 (safe) --- */
 #screenTitle{ position: relative; background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg'); background-size: cover; background-position: center; background-repeat:no-repeat; }
 #screenTitle::before{
   content:"";
@@ -445,7 +445,7 @@
   50%{ box-shadow: 0 18px 52px rgba(255,124,16,0.35), 0 18px 40px rgba(0,0,0,0.45); }
 }
 
-/* --- title screen override v2.5.17 --- */
+/* --- title screen override v2.5.58 --- */
 #screenTitle {
   position: relative !important;
   min-height: 100vh !important;
@@ -530,7 +530,7 @@
   50%{ box-shadow: 0 18px 52px rgba(255,124,16,0.35), 0 18px 40px rgba(0,0,0,0.45); }
 }
 
-/* --- title screen fix v2.5.17 --- */
+/* --- title screen fix v2.5.58 --- */
 #screenTitle{
   min-height: 100vh !important;
   height: 100vh !important;
@@ -611,7 +611,7 @@
   50%{ box-shadow: 0 18px 56px rgba(255,124,16,0.35), 0 18px 40px rgba(0,0,0,0.45); }
 }
 
-/* --- title logo v2.5.17 --- */
+/* --- title logo v2.5.58 --- */
 #screenTitle #titleLogo{
   visibility: visible !important;
   position: fixed !important;
@@ -636,7 +636,7 @@
   50%{ transform: translate(-50%, -50%) scale(0.92) translateY(-10px); }
 }
 
-/* --- title logo perf tweaks v2.5.17 --- */
+/* --- title logo perf tweaks v2.5.58 --- */
 #screenTitle #titleLogo{
   background: transparent !important;
   opacity: 0;
@@ -648,7 +648,7 @@
   transform: translate(-50%, -50%) scale(0.92) translateY(0px);
 }
 
-/* --- title button jazz v2.5.17 --- */
+/* --- title button jazz v2.5.58 --- */
 #screenTitle #btnCareToPlay{
   gap: 12px !important;
   padding: 18px 30px !important;
@@ -713,7 +713,7 @@
   filter: brightness(0.98) !important;
 }
 
-/* --- board background v2.5.17 --- */
+/* --- board background v2.5.58 --- */
 #board{
   position: relative;
 }
@@ -729,7 +729,7 @@
   z-index: 1;
 }
 
-/* --- playwrap background v2.5.17 --- */
+/* --- playwrap background v2.5.58 --- */
 #playWrap{
   position: relative;
   background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg');
@@ -749,7 +749,7 @@
   z-index: 1;
 }
 
-/* --- mapwrap background v2.5.17 (minimal, non-invasive) --- */
+/* --- mapwrap background v2.5.58 (minimal, non-invasive) --- */
 #mapWrap{
   background-image: url('https://reversebus.com/carerush/images/carerush_bg.jpg');
   background-size: cover;
@@ -757,7 +757,7 @@
   background-repeat: no-repeat;
 }
 
-/* --- darker tints v2.5.17 --- */
+/* --- darker tints v2.5.58 --- */
 /* mapwrap: keep bg image but add a darker tint via gradient layer */
 #mapWrap{
   background-image:
@@ -776,30 +776,30 @@
 }
 
 
-/* --- v2.5.17: stats moved to left pane (dom move) --- */
+/* --- v2.5.58: stats moved to left pane (dom move) --- */
 .hudRowLeft{margin-bottom:12px;}
 #playLeft .hudRowLeft .hudStat{display:flex;flex-direction:column;gap:6px;min-width:110px;align-items:center;}
 #playLeft .hudRowLeft .k{text-transform: lowercase;}
 
 
-/* v2.5.17: keep needs chips on one line */
+/* v2.5.58: keep needs chips on one line */
 .needsWrap::-webkit-scrollbar{height:6px;}
 .needsWrap::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.18);border-radius:999px;}
 .needsWrap::-webkit-scrollbar-track{background:rgba(0,0,0,0.0);}
 
 
-/* v2.5.17: keep stats on one line */
+/* v2.5.58: keep stats on one line */
 .hudRowLeft > div[style*="display:flex"]{flex-wrap:nowrap !important;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;}
 .hudRowLeft > div[style*="display:flex"]::-webkit-scrollbar{height:6px;}
 .hudRowLeft > div[style*="display:flex"]::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.18);border-radius:999px;}
 
 
-/* v2.5.17: tighten stats spacing so it fits without scroll */
+/* v2.5.58: tighten stats spacing so it fits without scroll */
 .hudRowLeft > div[style*="display:flex"]{gap:8px !important;justify-content:space-between;}
 #playLeft .hudRowLeft .hudStat{min-width:94px;}
 
 
-/* v2.5.17: darker left pane tint */
+/* v2.5.58: darker left pane tint */
 #playLeft{
   background: rgba(0,0,0,0.62) !important;
   border: 1px solid rgba(255,255,255,0.10);
@@ -807,12 +807,12 @@
 }
 
 
-/* v2.5.17: remove board tint */
+/* v2.5.58: remove board tint */
 #board{
 }
 
 
-/* v2.5.17: force board container fully transparent (no tint) */
+/* v2.5.58: force board container fully transparent (no tint) */
 html body #screenPlay #board.board{
   background: transparent !important;
   background-color: transparent !important;
@@ -820,7 +820,7 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.17: responsive community-need chips (no horizontal scroll) */
+/* v2.5.58: responsive community-need chips (no horizontal scroll) */
 .leftPane, .leftCol { overflow-x: hidden; }
 
 .needsRow, .needRow, .needChips, .needsChips {
@@ -845,7 +845,7 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.17: hard-fix needs chips overflow (targets actual container: .needsWrap#needsChips + any .flexscroll wrapper) */
+/* v2.5.58: hard-fix needs chips overflow (targets actual container: .needsWrap#needsChips + any .flexscroll wrapper) */
 #needsChips.needsWrap,
 .needsWrap#needsChips,
 .needsWrap.flexscroll,
@@ -884,7 +884,7 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.17: live minimap (maptiler/maplibre) */
+/* v2.5.58: live minimap (maptiler/maplibre) */
 .miniMap .maplibregl-canvas{ outline:none; }
 .miniGlDot{
   width: 12px; height: 12px; border-radius: 999px;
@@ -900,14 +900,14 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.17: minimap uses same pin icon logic as main map */
+/* v2.5.58: minimap uses same pin icon logic as main map */
 .miniGLPin{ display:flex; align-items:flex-end; justify-content:center; }
 .miniGLPin .crPinWrap{ display:flex; align-items:flex-end; justify-content:center; }
 .miniGLPin i{ filter: drop-shadow(0 10px 18px rgba(0,0,0,0.45)); transform: scale(0.75); transform-origin: bottom center; }
 .miniGLPin.active i{ animation: crPulse 1.2s ease-in-out infinite; }
 
 
-/* v2.5.17: move shuffle/back under minimap */
+/* v2.5.58: move shuffle/back under minimap */
 .leftActions{
   display:flex;
   flex-direction:column;
@@ -920,7 +920,7 @@ html body #screenPlay #board.board{
 }
 
 
-/* v2.5.17: mission start transition + mission complete recap */
+/* v2.5.58: mission start transition + mission complete recap */
 .screenFade{display:none !important;}
 .screenFade.on { background: rgba(0,0,0,0.55); pointer-events: all; }
 
@@ -942,7 +942,7 @@ html body #screenPlay #board.board{
 .recapNeed .n{ position:absolute; transform: translate(16px, 18px); font-size: 14px; font-weight: 950; color:#fff; text-shadow: 0 3px 10px rgba(0,0,0,0.55); }
 
 
-/* v2.5.17: center mission popup + recaps */
+/* v2.5.58: center mission popup + recaps */
 #missionModal .modalHeader, #winModal .modalHeader, #failModal .modalHeader { text-align:center; }
 #missionModal .modalHeader > div, #winModal .modalHeader > div, #failModal .modalHeader > div { width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 #missionModal .modalBody, #winModal .modalBody, #failModal .modalBody { text-align:center; }
@@ -1227,7 +1227,7 @@ border-radius: 18px;
 
 
 /* =========================
-   v2.5.17 mobile tune-up
+   v2.5.58 mobile tune-up
    - fit map to pins (all coords)
    - tighter HUD + board on phones
    ========================= */
@@ -1255,13 +1255,13 @@ border-radius: 18px;
 
 
 
-/* v2.5.17: hide minimap on mobile */
+/* v2.5.58: hide minimap on mobile */
 @media (max-width: 820px){
   .miniMapBox, .miniMap, #miniMap, #miniMapBox{ display:none !important; }
 }
 
 
-/* v2.5.17: mobile map should fill full horizontal space */
+/* v2.5.58: mobile map should fill full horizontal space */
 @media (max-width: 820px){
   #mapWrap{ padding-left: 0 !important; padding-right: 0 !important; }
   #mapCard{ width: 100% !important; margin: 0 !important; padding: 0 !important; }
@@ -1270,7 +1270,7 @@ border-radius: 18px;
 
 
 /* =========================
-   v2.5.17: map fills vertical space on mobile
+   v2.5.58: map fills vertical space on mobile
    ========================= */
 @media (max-width: 820px){
   /* let map area consume remaining height */
@@ -1297,7 +1297,7 @@ border-radius: 18px;
 
 
 /* =========================
-   v2.5.17 mobile play fit + mission modal polish
+   v2.5.58 mobile play fit + mission modal polish
    ========================= */
 @media (max-width: 820px){
   /* ensure bottom row of tiles is visible on iOS Safari */
@@ -1330,7 +1330,7 @@ border-radius: 18px;
 }
 
 
-/* v2.5.17: keep title CTA button text on one line (mobile) */
+/* v2.5.58: keep title CTA button text on one line (mobile) */
 @media (max-width: 820px){
   #btnCareToPlay{
     white-space: nowrap !important;
@@ -1346,7 +1346,7 @@ border-radius: 18px;
 }
 
 
-/* v2.5.17: mobile map should fill remaining vertical space without bleeding */
+/* v2.5.58: mobile map should fill remaining vertical space without bleeding */
 @media (max-width: 820px){
   #screenMap{ overflow:hidden !important; }
   #mapWrap{
@@ -1376,7 +1376,7 @@ border-radius: 18px;
 }
 
 
-/* v2.5.17 tweaks: state pill padding + map attribution readability */
+/* v2.5.58 tweaks: state pill padding + map attribution readability */
 #cityBadge{ padding: 8px 14px; font-size: 14px; }
 @media (max-width: 820px){
   #cityBadge{ padding: 8px 14px !important; font-size: 14px !important; }
@@ -1387,7 +1387,7 @@ border-radius: 18px;
 }
 
 
-/* ===== v2.5.31: play HUD centering + tighter needs + city pill ===== */
+/* ===== v2.5.58: play HUD centering + tighter needs + city pill ===== */
 .hudRow > div{width:100%;}
 .hudRow > div{justify-content:center;}
 .hudStat{display:flex;flex-direction:column;align-items:center;text-align:center;}
@@ -1400,7 +1400,7 @@ border-radius: 18px;
 }
 
 
-/* v2.5.31: grid screen header dynamic + remove mission pill */
+/* v2.5.58: grid screen header dynamic + remove mission pill */
 #missionNameBadge{ display:none !important; }
 #playLeft .cardHeader h3{ text-transform:none; }
 @media (max-width: 820px){
@@ -1409,7 +1409,7 @@ border-radius: 18px;
 }
 
 
-/* v2.5.31: ensure play screen content is horizontally centered on mobile */
+/* v2.5.58: ensure play screen content is horizontally centered on mobile */
 @media (max-width: 820px){
   #playWrap{ justify-items: center !important; }
   #playLeft, #playRight{
@@ -1431,6 +1431,23 @@ border-radius: 18px;
   }
 }
 
+
+    /* --- IAP store modal (v2.5.58) --- */
+    #iapModalOverlay{ position:fixed; inset:0; background:rgba(0,0,0,0.72); display:none; align-items:center; justify-content:center; z-index:9999; padding:18px; }
+    #iapModal{ width:min(520px, 92vw); background:#0b0b0b; border:1px solid rgba(255,255,255,0.12); border-radius:18px; box-shadow:0 22px 70px rgba(0,0,0,0.55); }
+    #iapModal header{ display:flex; align-items:center; justify-content:space-between; padding:14px 14px 10px; border-bottom:1px solid rgba(255,255,255,0.10); }
+    #iapModal header .h{ font-weight:900; letter-spacing:.02em; }
+    #iapModal header button{ background:transparent; border:0; color:#fff; font-size:18px; padding:8px 10px; border-radius:12px; }
+    #iapModal .body{ padding:14px; }
+    #iapModal .sub{ opacity:0.85; line-height:1.35; margin:0 0 12px; }
+    #iapProducts{ display:grid; gap:10px; }
+    .iapBtn{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 12px; border-radius:14px; border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.06); color:#fff; font-weight:800; cursor:pointer; }
+    .iapBtn small{ opacity:.82; font-weight:700; }
+    .iapBtn:active{ transform:translateY(1px); }
+    .iapHint{ font-size:12px; opacity:.72; margin-top:10px; }
+    .iapOwned{ font-size:12px; font-weight:900; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,0.14); }
+    .iapBtnOwned{ opacity:0.62; cursor:default; }
+
 </style>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
@@ -1446,13 +1463,14 @@ border-radius: 18px;
 <div class="topbar" id="topbar">
   <div class="brand">
     <img src="https://reversebus.com/carerush/images/carerush_logo.webp" alt="care rush" style="height:34px;width:auto;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.55));" />
-    <div class="badge" id="buildBadge" style="display:none">v2.5.31</div>
+    <div class="badge" id="buildBadge" style="display:none">v2.5.58</div>
   </div>
   <div style="display:flex; align-items:center; gap:10px;">
     <div class="badge" id="cityBadge">Indianapolis</div>
     
     <button class="btn ghost" id="btnBgm" title="Toggle music" aria-label="Toggle music"><i class="fa-duotone fa-solid fa-music" aria-hidden="true"></i></button>
     <button class="btn ghost" id="btnSfx" title="Toggle sound effects" aria-label="Toggle sound effects"><i class="fa-duotone fa-solid fa-bells" aria-hidden="true"></i></button>
+          <button class="iconBtn" id="btnStore" title="store" aria-label="store"><i class="fa-solid fa-bag-shopping"></i></button>
     <button class="btn ghost" id="btnHome" title="Return to title" aria-label="Return to title"><i class="fa-solid fa-house" aria-hidden="true"></i></button>
   </div>
 </div>
@@ -1481,7 +1499,7 @@ border-radius: 18px;
       </div>
     </div>
   </div>
-  <div id="titleFooter"><span id="titleBuild">v2.5.31</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
+  <div id="titleFooter"><span id="titleBuild">v2.5.58</span>    |    © <span id="titleFooterYear">2026</span> reversebus foundation inc. all rights reserved.</div>
 </section>
 
 <section class="screen" id="screenMap">
@@ -1530,7 +1548,8 @@ border-radius: 18px;
           <div class="hudStat"><div class="k">people</div><div class="v" id="peopleServed">0</div></div>
           <div class="hudStat"><div class="k">moves</div><div class="v" id="movesLeft">0</div></div>
           <div class="hudStat"><div class="k">time</div><div class="v" id="timeLeft">0:00</div></div>
-        </div>
+                  <div class="hudStat"><div class="k">shuffles</div><div class="v" id="shufflesLeftHud">0</div></div>
+</div>
       </div>
       <div class="boardBox">
 <div class="board" id="board"></div>
@@ -1588,7 +1607,7 @@ border-radius: 18px;
   // global control surface (for inline handlers + debugging)
   window.__CR = window.__CR || {};
   "use strict";
-  const BUILD = "care rush v2.5.31";
+  const BUILD = "care rush v2.5.58";
 
 
   // title → map entrypoint (used by inline onclick)
@@ -1612,7 +1631,7 @@ let __glMarkers = [];
 
 
 
-// v2.5.17: miniMap MapLibre instance (play screen)
+// v2.5.58: miniMap MapLibre instance (play screen)
 let __miniGlMap = null;
 let __miniGlMarkers = [];
 
@@ -1763,8 +1782,10 @@ function addGLMarker(m){
   el.className = "crGLPin";
   el.innerHTML = `<div class="crPinWrap">${iconHtml}</div>`;
   el.addEventListener("click", () => {
-    const mission = (STATE && STATE.missions) ? STATE.missions.find(x => x.id === m.id) : null;
-    if (!mission) return;
+    try{ if(typeof STATE==="object" && STATE) STATE.selectedPinId = m.id; STATE.selectedPin = m; }catch(_){ }
+    const mission = m;
+    try{ if(typeof STATE==="object" && STATE) STATE.selectedMission = mission; }catch(_){ }
+    if (!isPinUnlocked(m)){ try{ openStoreModal(skuForPin(m)); }catch(_){ } return; }
     if (STATE.completedToday && STATE.completedToday.has(m.id)){ try{ toast("done today"); }catch(_){ } return; }
     openMission(mission);
   });
@@ -1858,8 +1879,10 @@ __leafletMap.setView([39.7684, -86.1581], 12);
     });
     const marker = L.marker([m.lat, m.lng], { icon, pane:"pins" });
     marker.on("click", () => {
-      const mission = (STATE && STATE.missions) ? STATE.missions.find(x => x.id === m.id) : null;
-      if (!mission) return;
+      try{ if(typeof STATE==="object" && STATE) STATE.selectedPinId = m.id; STATE.selectedPin = m; }catch(_){ }
+      const mission = m;
+      try{ if(typeof STATE==="object" && STATE) STATE.selectedMission = mission; }catch(_){ }
+      if (!isPinUnlocked(m)){ try{ openStoreModal(skuForPin(m)); }catch(_){ } return; }
       if (STATE.completedToday && STATE.completedToday.has(m.id)){ try{ toast("done today"); }catch(_){ } return; }
       openMission(mission);
     });
@@ -2061,14 +2084,232 @@ function loadCampaign(){
 
 
   const STATE = {
-    uidCounter: 1, screen:"title", peopleServedTotal:0, missions:[], selectedMission:null, completedToday:new Set(), N:8, grid:[], selected:null, movesLeft:0, timeLeft:0, timer:null, needsRemaining:null, peopleServedMission:0 ,
+    deviceId:null, entitlements:new Set(),
+        uidCounter: 1, screen:"title", peopleServedTotal:0, missions:[], selectedMission:null, completedToday:new Set(), N:8, grid:[], selected:null, movesLeft:0, timeLeft:0, timer:null, needsRemaining:null, peopleServedMission:0 ,
     busy:false,
     donationEvery:6,
     movesSinceDonation:0,
     donationPos:null,
     selectedPinId:null,
-    _id:0
+    
+    selectedPin:null,
+_id:0
   };
+  // --- IAP client (v2.5.58) ---
+  const IAP_API_BASE = "https://api.reversebus.com";
+  const IAP_PRODUCTS = [
+    { sku:"state_indiana", label:"unlock indiana", desc:"all indiana cities", price:"$0.99" },
+    { sku:"boost_shuffles_3", label:"boost pack", desc:"+3 shuffles", price:"$1.99" },
+    { sku:"impact_5", label:"impact pack", desc:"fund care", price:"$5.00" },
+    { sku:"supporter_badge", label:"supporter badge", desc:"thank you!", price:"$9.99" },
+    { sku:"city_gary", label:"gary", desc:"unlock city", price:"$0.99" },
+    { sku:"city_fort_wayne", label:"fort wayne", desc:"unlock city", price:"$0.99" },
+    { sku:"city_south_bend", label:"south bend", desc:"unlock city", price:"$0.99" },
+    { sku:"city_bloomington", label:"bloomington", desc:"unlock city", price:"$0.99" },
+    { sku:"city_evansville", label:"evansville", desc:"unlock city", price:"$0.99" },
+    { sku:"city_lafayette", label:"lafayette", desc:"unlock city", price:"$0.99" },
+    { sku:"city_muncie", label:"muncie", desc:"unlock city", price:"$0.99" },
+    { sku:"city_kokomo", label:"kokomo", desc:"unlock city", price:"$0.99" },
+    { sku:"city_terre_haute", label:"terre haute", desc:"unlock city", price:"$0.99" },
+  ];
+
+  function ensureDeviceId(){
+    try{
+      let id = localStorage.getItem("carerush_deviceId");
+      if (!id){
+        const rand = (self.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("dev_"+Math.random().toString(16).slice(2)+"_"+Date.now());
+        id = rand;
+        localStorage.setItem("carerush_deviceId", id);
+      }
+      STATE.deviceId = id;
+      return id;
+    }catch(_){
+      STATE.deviceId = "dev_"+Math.random().toString(16).slice(2);
+      return STATE.deviceId;
+    }
+  }
+
+  async function fetchEntitlements(){
+    // If opened as a local file (Origin: null), the browser will block CORS.
+    // In that case, fall back to whatever is already cached in localStorage and show a hint.
+    if (location.protocol === "file:" || location.origin === "null") {
+      try {
+        const el = document.getElementById("storeStatus");
+        if (el) el.textContent = "(tip) open via https://reversebus.com or GitHub Pages to enable purchases";
+      } catch (e) {}
+      return readEntitlements();
+    }
+    const deviceId = ensureDeviceId();
+    try{
+      const r = await fetch(`${IAP_API_BASE}/iap/entitlements?deviceId=${encodeURIComponent(deviceId)}`, { method:"GET" });
+      const j = await r.json();
+      const arr = Array.isArray(j.entitlements) ? j.entitlements : [];
+      STATE.entitlements = new Set(arr);
+      // if we're mid-mission, recalc shuffles based on newly-owned boosts
+      if (STATE.activeMission){
+        const base = calcShufflesForMission();
+        if (typeof STATE.shufflesLeft !== "number") STATE.shufflesLeft = base;
+        else if (STATE.shufflesLeft < base) STATE.shufflesLeft = base;
+        updateShuffleUI();
+      }
+      return arr;
+    }catch(e){
+      console.warn("[CareRush] fetchEntitlements failed", e);
+      return Array.from(STATE.entitlements||[]);
+    }
+  }
+
+  // cache entitlements fetch so map renders after it resolves
+  async function ensureEntitlements(){
+    if (!STATE._entPromise){
+      STATE._entPromise = fetchEntitlements();
+    }
+    return STATE._entPromise;
+  }
+
+  async function gotoMapAndRender(){
+    showScreen("map");
+    try{ await ensureEntitlements(); }catch(_){}
+    try{ renderMap(); }catch(_){}
+  }
+
+
+  function skuForPin(pin){
+    if (!pin || !pin.name) return null;
+    const n = String(pin.name).toLowerCase().trim().replace(/\s+/g,"_");
+    if (n === "indianapolis") return null; // free
+    return "city_" + n;
+  }
+
+  function isPinUnlocked(pin){
+    if (!pin) return true;
+    if (pin.id === "indy" || String(pin.name).toLowerCase()==="indianapolis") return true;
+    if (STATE.entitlements && STATE.entitlements.has("state_indiana")) return true;
+    const sku = skuForPin(pin);
+    return !!(sku && STATE.entitlements && STATE.entitlements.has(sku));
+  }
+  function hasEntitlement(sku){
+    return !!(sku && STATE.entitlements && STATE.entitlements.has(sku));
+  }
+
+  // --- Boost pack: +3 shuffles ---
+  const BASE_SHUFFLES_PER_MISSION = 1;
+  function calcShufflesForMission(){
+    return BASE_SHUFFLES_PER_MISSION + (hasEntitlement("boost_shuffles_3") ? 3 : 0);
+  }
+  function updateShuffleUI(){
+    const n = typeof STATE.shufflesLeft === "number" ? STATE.shufflesLeft : 0;
+
+    const b = document.getElementById("btnShuffle");
+    if (b){
+      b.textContent = n > 0 ? `shuffle (${n})` : "shuffle";
+      b.disabled = n <= 0;
+      b.style.opacity = n <= 0 ? "0.45" : "1";
+      b.style.pointerEvents = n <= 0 ? "none" : "auto";
+    }
+
+    const hud = document.getElementById("shufflesLeftHud");
+    if (hud){
+      hud.textContent = String(n);
+    }
+  }
+
+
+
+
+  function openStoreModal(focusSku){
+  // HARD guarantee: if a pin was selected, focus on it.
+  try{ if(!focusSku && typeof STATE==='object' && STATE && STATE.selectedPin && typeof skuForPin==='function'){ const s=skuForPin(STATE.selectedPin); if(s) focusSku=s; } }catch(_){ }
+  // derive focus sku from selected pin when not provided
+  try{
+    if(!focusSku && typeof STATE!=="undefined" && STATE && STATE.selectedPinId && Array.isArray(STATE.missions)){
+      const m = STATE.missions.find(x=>x.id===STATE.selectedPinId);
+      if(m){ focusSku = skuForPin(m); }
+    }
+    // also derive focus sku from selected mission object
+  try{
+    if(!focusSku && typeof STATE!=='undefined' && STATE && STATE.selectedMission){
+      const m = STATE.selectedMission;
+      const s = (typeof skuForPin==='function') ? skuForPin(m) : null;
+      if(s) focusSku = s;
+    }
+  }catch(_){ }
+
+}catch(_){ }
+
+    const ov = document.getElementById("iapModalOverlay");
+    const list = document.getElementById("iapProducts");
+    if (!ov || !list) return;
+
+    const essentials = ["state_indiana","boost_shuffles_3","impact_5","supporter_badge"];
+
+    // If no explicit focus, infer from the currently selected map pin (if any).
+    if (!focusSku){
+      try {
+        const mid = (typeof STATE === "object" && STATE && STATE.selectedPinId) ? STATE.selectedPinId : null;
+        if (mid && Array.isArray(STATE.missions)){
+          const m = STATE.missions.find(x => x && x.id === mid);
+          if (m && typeof skuForPin === "function") focusSku = skuForPin(m);
+        }
+      } catch(e){}
+    }
+
+    // Focused list in the desired order.
+    const bySku = new Map(IAP_PRODUCTS.map(p => [p.sku, p]));
+    const focused = [];
+    const push = (sku)=>{ const it = bySku.get(sku); if(it && !focused.some(x=>x.sku===sku)) focused.push(it); };
+
+    if (focusSku && focusSku.startsWith("city_")) push(focusSku);
+    // Always include Indiana + loyalty packs in focus mode.
+    if (focusSku && (focusSku.startsWith("city_") || focusSku === "state_indiana")){
+      essentials.forEach(push);
+    }
+
+    const items = (focusSku && (focusSku.startsWith("city_") || focusSku === "state_indiana"))
+      ? focused
+      : IAP_PRODUCTS;
+
+    // Render
+    list.innerHTML = "";
+    items.forEach(p => {
+      const btn = document.createElement("button");
+      btn.className = "iapRow";
+      btn.type = "button";
+      btn.innerHTML = `
+        <div class="iapLeft">
+          <div class="iapTitle">${escapeHtml(p.label||p.title||"")}</div>
+          <div class="iapSubtitle">${escapeHtml(p.desc||p.subtitle||"")}</div>
+        </div>
+        <div class="iapPrice">${escapeHtml(p.price||p.priceLabel||"")}</div>
+      `;
+      btn.addEventListener("click", () => beginPurchase(p.sku));
+      list.appendChild(btn);
+    });
+
+    // Update subtitle to confirm focus (also helps spot cached builds).
+    try{
+      const sub = document.getElementById("iapSub");
+      if (sub){
+        if (focusSku && focusSku.startsWith("city_")) sub.textContent = `offers for ${focusSku.replace("city_", "")}. support the mission and unlock extras.`;
+        else if (focusSku === "state_indiana") sub.textContent = `offers for indiana. support the mission and unlock extras.`;
+        else sub.textContent = "support the mission and unlock extras.";
+      }
+    }catch(e){}
+
+    ov.style.display = "flex";
+  }
+
+  function closeStoreModal(){
+    const ov = document.getElementById("iapModalOverlay");
+    if (ov) ov.style.display = "none";
+  }
+
+  async function refreshEntitlementsAndRerender(){
+    STATE._entPromise = null;
+    await ensureEntitlements();
+    try{ if (STATE.screen==="map") renderMap(); }catch(_){}
+  }
+
 
   // debounce gate + mission intro animation
   const __CR_GATES = window.__CR_GATES || (window.__CR_GATES = {});
@@ -2233,20 +2474,20 @@ function loadCampaign(){
   $("btnBgm").addEventListener("click", () => { AudioManager.unlock(); AudioManager.toggleBgm(); AudioManager.playSfx("click"); });
   $("btnSfx").addEventListener("click", () => { AudioManager.unlock(); AudioManager.toggleSfx(); AudioManager.playSfx("click"); });
   const __btnCareToPlay = $("btnCareToPlay");
-  if (__btnCareToPlay) __btnCareToPlay.addEventListener("click", () => { AudioManager.unlock(); AudioManager.playSfx("click"); showScreen("map"); try{ renderMap(); }catch(e){ console.error("[CareRush] renderMap failed", e); } });
+  if (__btnCareToPlay) __btnCareToPlay.addEventListener("click", async () => { AudioManager.unlock(); AudioManager.playSfx("click"); await gotoMapAndRender(); });
   $("btnDaily").addEventListener("click", () => { AudioManager.playSfx("click");  showScreen("map"); if (STATE.missions[0]) openMission(STATE.missions[0]); });
-  $("btnQuit").addEventListener("click", () => { AudioManager.playSfx("click");  stopTimer(); showScreen("map"); renderMap(); });
-  $("btnShuffle").addEventListener("click", () => { AudioManager.playSfx("click");  if (!STATE.grid.length) return; shuffleBoard(); renderBoard(); });
+  $("btnQuit").addEventListener("click", async () => { AudioManager.playSfx("click");  stopTimer(); await gotoMapAndRender(); });
+  $("btnShuffle").addEventListener("click", () => { AudioManager.playSfx("click");  if (!STATE.grid.length) return; if (typeof STATE.shufflesLeft !== "number") STATE.shufflesLeft = calcShufflesForMission(); if (STATE.shufflesLeft <= 0) return; STATE.shufflesLeft--; updateShuffleUI(); shuffleBoard(); renderBoard(); });
 
   const __btnCloseMission = document.getElementById("btnCloseMission");
   if (__btnCloseMission) __btnCloseMission.addEventListener("click", () => { AudioManager.playSfx("click"); closeMissionModal(); });
 
-  $("btnMissionNotNow").addEventListener("click", () => { AudioManager.playSfx("click"); closeMissionModal(); showScreen("map"); renderMap(); });
+  $("btnMissionNotNow").addEventListener("click", async () => { AudioManager.playSfx("click"); closeMissionModal(); await gotoMapAndRender(); });
   $("overlay").addEventListener("click", () => { closeMissionModal(); closeWinModal(); });
   $("btnMissionStart").addEventListener("click", () => { AudioManager.playSfx("click");  closeMissionModal(); startMission(STATE.selectedMission); });
   const __btnWinToMap = document.getElementById("btnWinToMap");
-  if (__btnWinToMap) __btnWinToMap.addEventListener("click", () => { AudioManager.playSfx("click"); closeWinModal(); showScreen("map"); try{ renderMap(); }catch(_){ } });
-  $("btnBackToMap").addEventListener("click", () => { AudioManager.playSfx("click"); closeWinModal(); showScreen("map"); try{ renderMap(); }catch(_){ } });
+  if (__btnWinToMap) __btnWinToMap.addEventListener("click", async () => { AudioManager.playSfx("click"); closeWinModal(); await gotoMapAndRender(); });
+  $("btnBackToMap").addEventListener("click", async () => { AudioManager.playSfx("click"); closeWinModal(); await gotoMapAndRender(); });
 
   // fail modal buttons
   try{
@@ -2285,6 +2526,7 @@ function loadCampaign(){
     closeMissionModal(); closeWinModal();
     const tb = document.getElementById("topbar"); if(tb) tb.style.display = (which==="title") ? "none" : "";
     $("peopleServedTitle").textContent = String(STATE.peopleServedTotal);
+    updateShuffleUI();
   }
 
   
@@ -2470,6 +2712,7 @@ function renderMap(){
     document.querySelectorAll(".pinIcon.selected").forEach(p => p.classList.remove("selected"));
     target.classList.add("selected");
     STATE.selectedPinId = mid;
+    try{ STATE.selectedPin = mission || (STATE.missions||[]).find(x=>x.id===mid) || null; }catch(_){ }
 
     const mission = STATE.missions.find(x => x.id === mid);
     if (!mission) return;
@@ -2496,6 +2739,8 @@ function renderMap(){
 
 
   function openMission(m){
+    try{ if(typeof STATE==='object' && STATE && m && m.id){ STATE.selectedPinId = m.id; } }catch(_){ }
+    if (!isPinUnlocked(m)){ try{ openStoreModal(skuForPin(m)); }catch(_){ } return; }
     STATE.selectedMission = m;
     $("missionPeople").textContent = String(m.people);
     $("missionMoves").textContent = String(m.moves);
@@ -2552,6 +2797,9 @@ function startMission(m){
     STATE.timeLeft = m.time;
     STATE.peopleServedMission = 0;
 
+    // shuffles are limited per mission; boost pack grants +3
+    STATE.shufflesLeft = calcShufflesForMission();
+
     STATE._id = 0;
     STATE.grid = makeFreshBoardNoMatches(STATE.N);
     ensureCellIds();
@@ -2569,6 +2817,7 @@ function startMission(m){
     $("movesLeft").textContent = String(STATE.movesLeft);
     $("timeLeft").textContent = fmtTime(STATE.timeLeft);
     $("peopleServedTitle").textContent = String(STATE.peopleServedTotal);
+    updateShuffleUI();
   }
 
   function renderNeeds(){
@@ -3309,7 +3558,7 @@ function startTimer(){
     { id:"sb",    name:"south bend",   lat:41.6764, lng:-86.2520 },
     { id:"btown", name:"bloomington",  lat:39.1653, lng:-86.5264 },
     { id:"evv",   name:"evansville",   lat:37.9716, lng:-87.5711 },
-    { id:"hamm",  name:"hammond",      lat:41.5834, lng:-87.5000 },
+    { id:"gary",  name:"gary",         lat:41.5934, lng:-87.3464 },
     { id:"laf",   name:"lafayette",    lat:40.4167, lng:-86.8753 },
     { id:"munc",  name:"muncie",       lat:40.1934, lng:-85.3864 },
     { id:"koko",  name:"kokomo",       lat:40.4864, lng:-86.1336 },
@@ -3485,7 +3734,7 @@ function startTimer(){
 })();
 </script>
 <script>
-/* v2.5.17: move people served / moves left / time left into left pane above community needs,
+/* v2.5.58: move people served / moves left / time left into left pane above community needs,
    without touching engine code. */
 (function(){
   function moveHudStatsToLeft(){
@@ -3531,7 +3780,7 @@ function startTimer(){
   }
 })();
 
-/* v2.5.17: transition + recap helpers */
+/* v2.5.58: transition + recap helpers */
 function crGetFade(){ return document.getElementById("screenFade"); }
 function crFadeOn(){ /* disabled */ }
 function crFadeOff(){ /* disabled */ }
@@ -3601,12 +3850,11 @@ function crShowMissionRecap(mission, stats){
 
   actions.innerHTML = `<button class="btn primary" id="recapOkBtn">back to map</button>`;
   const ok = document.getElementById("recapOkBtn");
-  ok.onclick = () => {
+  ok.onclick = async () => {
     modal.classList.remove("open","recap");
     // mark mission complete + return to map
     if (mission && mission.id) completeMissionForToday(mission.id);
-    showScreen("map");
-    renderMap();
+    await gotoMapAndRender();
   };
 }
 
@@ -3621,5 +3869,80 @@ function crShowMissionRecap(mission, stats){
 
 
 <div class="screenFade" id="screenFade"></div>
+
+
+<script>
+(function(){
+  // wire modal close + store button + auto-refresh after Stripe redirect
+  function wireIapUI(){
+    const closeStoreModalFn = (typeof window.closeStoreModal === "function")
+      ? window.closeStoreModal
+      : function(){
+          const m = document.getElementById("iapModal");
+          if (m) m.classList.remove("show");
+          document.body && document.body.classList.remove("modalOpen");
+        };
+    try{
+      ensureDeviceId();
+      ensureEntitlements().then(()=>{ try{ if (STATE.screen==='map') renderMap(); }catch(_){} });
+    }catch(_){}
+
+    const closeBtn = document.getElementById("iapCloseBtn");
+    const ov = document.getElementById("iapModalOverlay");
+    if (closeBtn) closeBtn.addEventListener("click", closeStoreModalFn);
+    if (ov) ov.addEventListener("click", (e)=>{ if (e.target === ov) closeStoreModalFn(); });
+
+    const storeBtn = document.getElementById("btnStore");
+    if (storeBtn) storeBtn.addEventListener("click", ()=>{
+      // If a map pin is selected, focus the store on that city.
+      let focusSku = null;
+      try{
+        const mid = (typeof STATE === "object" && STATE && STATE.selectedPinId) ? STATE.selectedPinId : null;
+        if (mid && Array.isArray(STATE.missions)){
+          const m = STATE.missions.find(x => x && x.id === mid);
+          if (m && typeof skuForPin === "function"){
+            focusSku = skuForPin(m);
+          }
+        }
+      }catch(_){}
+      openStoreModal(focusSku);
+    });
+
+    // if we came back from Stripe with ?paid=1, refresh entitlements and clean the URL
+    try{
+      const u = new URL(window.location.href);
+      if (u.searchParams.get("paid")==="1"){
+        refreshEntitlementsAndRerender();
+        u.searchParams.delete("paid");
+        window.history.replaceState({}, "", u.toString());
+      }
+      if (u.searchParams.get("canceled")==="1"){
+        u.searchParams.delete("canceled");
+        window.history.replaceState({}, "", u.toString());
+      }
+    }catch(_){}
+  }
+
+  if (document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", wireIapUI);
+  } else {
+    wireIapUI();
+  }
+})();
+</script>
+<div id="iapModalOverlay" role="dialog" aria-modal="true" aria-label="store">
+  <div id="iapModal">
+    <header>
+      <div class="h">store</div>
+      <button id="iapCloseBtn" aria-label="close"><i class="fa-solid fa-xmark"></i></button>
+    </header>
+    <div class="body">
+      <p class="sub" id="iapSub">support the mission and unlock extras.</p>
+      <div id="iapProducts"></div>
+      <div class="iapHint">purchases are tied to this device id.</div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
